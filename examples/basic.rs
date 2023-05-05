@@ -27,6 +27,9 @@ impl App for Editor {
     fn on_event(&mut self, event: AppEvent) {
         match event {
             AppEvent::KeyDown(_, _mods) => {}
+            AppEvent::WindowResize(x, y) => {
+                self.rect = Rect::new(24., 24., x as f32 - 24., y as f32 - 24.)
+            }
             AppEvent::MouseMove { x, y } => {
                 self.mouse_pos = Vec2::new(x as f32, y as f32);
             }
