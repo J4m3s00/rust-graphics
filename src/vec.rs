@@ -25,17 +25,29 @@ impl Vec2 {
     pub fn new(x: f32, y: f32) -> Self {
         Self { x, y }
     }
+
+    pub fn zero() -> Self {
+        Self::new(0., 0.,)
+    }
 }
 
 impl Vec3 {
     pub fn new(x: f32, y: f32, z: f32) -> Self {
         Self { x, y, z }
     }
+
+    pub fn zero() -> Self {
+        Self::new(0., 0., 0.,)
+    }
 }
 
 impl Vec4 {
     pub fn new(x: f32, y: f32, z: f32, w: f32) -> Self {
         Self { x, y, z, w }
+    }
+
+    pub fn zero() -> Self {
+        Self::new(0., 0., 0., 0.,)
     }
 }
 

@@ -1,3 +1,5 @@
+use crate::bindings::{self, AppEventType_AppEventType_Quit, AppEventType_AppEventType_WindowResize, AppEventType_AppEventType_KeyDown, AppEventType_AppEventType_KeyUp, AppEventType_AppEventType_MouseDown, AppEventType_AppEventType_MouseUp, AppEventType_AppEventType_MouseMove};
+
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 /// TODO: NEED TO MAKE MATCHING ON MODS BETTER.
@@ -30,6 +32,49 @@ impl From<u16> for KeyMods {
             l_system: value & 0x0400 != 0,
             r_system: value & 0x0800 != 0,
             caps_lock: value & 0x2000 != 0,
+        }
+    }
+}
+
+
+#[derive(Debug)]
+pub enum AppEvent {
+    None,
+    Quit,
+
+    WindowResize(i32, i32),
+
+    MouseDown { key: i32, x: i32, y: i32 },
+    MouseMove { x: i32, y: i32 },
+    MouseUp { key: i32, x: i32, y: i32 },
+
+    KeyDown(i32, KeyMods),
+    KeyUp(i32, KeyMods),
+    //TextInput(String),
+}
+
+impl From<bindings::AppEvent> for AppEvent {
+    fn from(value: bindings::AppEvent) -> Self {
+        match value.type_ {
+            AppEventType_AppEventType_Quit => AppEvent::Quit,
+            AppEventType_AppEventType_WindowResize => AppEvent::WindowResize(value.x, value.y),
+            AppEventType_AppEventType_KeyDown => AppEvent::KeyDown(value.key, KeyMods::from(value.code as u16)),
+            AppEventType_AppEventType_KeyUp => AppEvent::KeyUp(value.key, KeyMods::from(value.code as u16)),
+            AppEventType_AppEventType_MouseDown => AppEvent::MouseDown {
+                key: value.key,
+                x: value.x,
+                y: value.y,
+            },
+            AppEventType_AppEventType_MouseUp => AppEvent::MouseUp {
+                key: value.key,
+                x: value.x,
+                y: value.y,
+            },
+            AppEventType_AppEventType_MouseMove => AppEvent::MouseMove {
+                x: value.x,
+                y: value.y,
+            },
+            _ => AppEvent::None,
         }
     }
 }

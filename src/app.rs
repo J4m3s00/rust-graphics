@@ -1,4 +1,5 @@
-use crate::AppEvent;
+use crate::events::app_events::AppEvent;
+
 
 pub trait App {
     fn on_start(&mut self) {}

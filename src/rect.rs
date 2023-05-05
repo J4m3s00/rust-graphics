@@ -79,5 +79,10 @@ impl Rect {
         Vec2::new(self.width(), self.height())
     }
 
-    
+    pub fn contains(&self, point: Vec2) -> bool {
+        point.x >= self.left
+            && point.x <= self.right
+            && point.y >= self.top
+            && point.y <= self.bottom
+    }
 }

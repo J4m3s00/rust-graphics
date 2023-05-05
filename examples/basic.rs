@@ -1,25 +1,54 @@
-use rust_graphics::{app::App, events::app_events::KeyMods, run_app, AppEvent, run_draw_command, draw_command::{DrawCommand, Stroke}, color::{Color, COLOR_BLACK}};
+use rust_graphics::{
+    app::App,
+    color::{COLOR_BLACK, COLOR_CYAN, COLOR_GREEN},
+    draw_command::{DrawCommand, Fill, Stroke},
+    events::app_events::AppEvent,
+    rect::Rect,
+    run_app, run_draw_command, vec::Vec2,
+};
 
-struct Editor;
+struct Editor {
+    rect: Rect,
+    mouse_pos: Vec2,
+}
+
+impl Editor {
+    fn new() -> Self {
+        Self {
+            rect: Rect::new_from_xy(24., 24., 100., 100.),
+            mouse_pos: Vec2::zero(),
+        }
+    }
+}
 
 impl App for Editor {
     fn on_start(&mut self) {}
 
     fn on_event(&mut self, event: AppEvent) {
         match event {
-            AppEvent::KeyDown(_, mods) => {
-                let mods = KeyMods::from(mods);
-                println!("KeyDown: {:?}", mods);
+            AppEvent::KeyDown(_, _mods) => {}
+            AppEvent::MouseMove { x, y } => {
+                self.mouse_pos = Vec2::new(x as f32, y as f32);
             }
             _ => {}
         }
     }
 
     fn on_draw(&mut self) {
-        run_draw_command(&DrawCommand::Rect { left: 0., top: 0., width: 100., height: 100., fill: None, stroke: Some(Stroke { width: 2., color: COLOR_BLACK }) })
+        run_draw_command(&DrawCommand::Rect {
+            left: self.rect.left,
+            top: self.rect.top,
+            width: self.rect.width(),
+            height: self.rect.height(),
+            fill: Some(Fill { color: if self.rect.contains(self.mouse_pos) { COLOR_CYAN } else { COLOR_GREEN } }),
+            stroke: Some(Stroke {
+                width: 2.,
+                color: COLOR_BLACK,
+            }),
+        })
     }
 }
 
 fn main() {
-    run_app(Editor)
+    run_app(Editor::new())
 }
