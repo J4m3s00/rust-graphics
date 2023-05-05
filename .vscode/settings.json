@@ -4,5 +4,5 @@
         "filesystem": "cpp"
     },
     "cmake.configureOnOpen": false,
-    "cmake.sourceDirectory": "/Users/lucaherzke/Documents/DEV/rust-graphics/backend"
+    "cmake.sourceDirectory": "${workspaceFolder}/backend"
 }
