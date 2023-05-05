@@ -82,50 +82,76 @@ c_start_application(const InitApp *app)
 
     sr::Font font = sr::srLoadFont("/Users/lucaherzke/Documents/DEV/rust-ui/graphics/backend/deps/software-rendering/Roboto.ttf", 24);
 
-    state.done = false;
     state.window = window;
     state.font = font;
     SDL_GL_GetDrawableSize(window, &state.window_width, &state.window_height);
     return 0;
 }
 
-EXPORT AppEvent *c_pre_update_application()
+EXPORT void c_pre_update_application()
 {
-    AppEvent *result = new AppEvent();
-#define RETURN_EXIT                              \
-    AppEvent *ret = new AppEvent();              \
-    ret->type = AppEventType::AppEventType_Quit; \
-    return ret;
-
-    SDL_Event event;
-    while (SDL_PollEvent(&event))
-    {
-        switch (event.type)
-        {
-        case SDL_QUIT:
-            state.done = true;
-            break;
-        case SDL_WINDOWEVENT:
-            if (event.window.event == SDL_WINDOWEVENT_CLOSE && event.window.windowID == SDL_GetWindowID(state.window))
-                result->type = AppEventType_Quit;
-            else if (event.window.event == SDL_WINDOWEVENT_RESIZED)
-            {
-                state.window_width = event.window.data1;
-                state.window_height = event.window.data2;
-                SDL_GL_GetDrawableSize(state.window, &state.window_width, &state.window_height);
-            }
-            break;
-        }
-        if (event.type == SDL_QUIT)
-            result->type = AppEventType_Quit;
-        if (event.type == SDL_WINDOWEVENT && event.window.event == SDL_WINDOWEVENT_CLOSE && event.window.windowID == SDL_GetWindowID(state.window))
-            result->type = AppEventType_Quit;
-    }
-
     sr::srNewFrame(state.window_width, state.window_height);
+}
 
+EXPORT AppEvent *c_poll_events()
+{
+    SDL_Event event;
+    if (!SDL_PollEvent(&event))
+    {
+        return NULL;
+    }
+    AppEvent *result = new AppEvent();
+
+    switch (event.type)
+    {
+    case SDL_QUIT:
+        result->type = AppEventType_Quit;
+        break;
+    case SDL_WINDOWEVENT:
+        if (event.window.event == SDL_WINDOWEVENT_CLOSE && event.window.windowID == SDL_GetWindowID(state.window))
+            result->type = AppEventType_Quit;
+        else if (event.window.event == SDL_WINDOWEVENT_RESIZED)
+        {
+            state.window_width = event.window.data1;
+            state.window_height = event.window.data2;
+            SDL_GL_GetDrawableSize(state.window, &state.window_width, &state.window_height);
+            result->type = AppEventType_WindowResize;
+            result->x = state.window_width;
+            result->y = state.window_height;
+        }
+        break;
+    case SDL_KEYDOWN:
+        result->type = AppEventType_KeyDown;
+        result->key = event.key.keysym.sym;
+        result->code = event.key.keysym.mod;
+        break;
+    case SDL_KEYUP:
+        result->type = AppEventType_KeyUp;
+        result->key = event.key.keysym.sym;
+        result->code = event.key.keysym.mod;
+        break;
+    case SDL_MOUSEBUTTONDOWN:
+        result->type = AppEventType_MouseDown;
+        result->key = event.button.button;
+        result->x = event.button.x;
+        result->y = event.button.y;
+        break;
+    case SDL_MOUSEBUTTONUP:
+        result->type = AppEventType_MouseUp;
+        result->key = event.button.button;
+        result->x = event.button.x;
+        result->y = event.button.y;
+        break;
+    case SDL_MOUSEMOTION:
+        result->type = AppEventType_MouseMove;
+        result->x = event.motion.x;
+        result->y = event.motion.y;
+        break;
+    }
+    
     return result;
 }
+
 
 EXPORT void c_post_update_application()
 {

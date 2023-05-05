@@ -43,14 +43,17 @@ typedef struct AppEvent
     int key;
     int x;
     int y;
+    uint32_t code; // Stores extra infos like mods on key downs
 } AppEvent;
 
 // initApp is borrowed.
 EXPORT int c_start_application(const InitApp *initApp);
+// After that you can render things
+EXPORT void c_pre_update_application();
+
 // Ownership of AppEvent is transferred to the caller.
 // Update application and return an event.
-// After that you can render things
-EXPORT AppEvent *c_pre_update_application();
+EXPORT AppEvent *c_poll_events();
 
 // Post rendering update of the application
 EXPORT void c_post_update_application();

@@ -689,6 +689,7 @@ pub struct AppEvent {
     pub key: ::std::os::raw::c_int,
     pub x: ::std::os::raw::c_int,
     pub y: ::std::os::raw::c_int,
+    pub code: u32,
 }
 #[test]
 fn bindgen_test_layout_AppEvent() {
@@ -696,7 +697,7 @@ fn bindgen_test_layout_AppEvent() {
     let ptr = UNINIT.as_ptr();
     assert_eq!(
         ::std::mem::size_of::<AppEvent>(),
-        16usize,
+        20usize,
         concat!("Size of: ", stringify!(AppEvent))
     );
     assert_eq!(
@@ -744,12 +745,25 @@ fn bindgen_test_layout_AppEvent() {
             stringify!(y)
         )
     );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).code) as usize - ptr as usize },
+        16usize,
+        concat!(
+            "Offset of field: ",
+            stringify!(AppEvent),
+            "::",
+            stringify!(code)
+        )
+    );
 }
 extern "C" {
     pub fn c_start_application(initApp: *const InitApp) -> ::std::os::raw::c_int;
 }
 extern "C" {
-    pub fn c_pre_update_application() -> *mut AppEvent;
+    pub fn c_pre_update_application();
+}
+extern "C" {
+    pub fn c_poll_events() -> *mut AppEvent;
 }
 extern "C" {
     pub fn c_post_update_application();

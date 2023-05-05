@@ -1,9 +1,20 @@
+#[derive(Copy, Clone, Debug, PartialEq, Eq, Hash)]
 pub struct Color {
     pub r: u8,
     pub g: u8,
     pub b: u8,
     pub a: u8,
 }
+
+pub static COLOR_BLACK: Color = Color {r: 0, g: 0, b: 0, a: 255};
+pub static COLOR_WHITE: Color = Color {r: 255, g: 255, b: 255, a: 255};
+pub static COLOR_RED: Color = Color {r: 235, g: 87, b: 87, a: 255};
+pub static COLOR_GREEN: Color = Color {r: 87, g: 235, b: 87, a: 255};
+pub static COLOR_BLUE: Color = Color {r: 87, g: 87, b: 235, a: 255};
+pub static COLOR_YELLOW: Color = Color {r: 235, g: 235, b: 87, a: 255};
+pub static COLOR_MAGENTA: Color = Color {r: 235, g: 87, b: 235, a: 255};
+pub static COLOR_CYAN: Color = Color {r: 87, g: 235, b: 235, a: 255};
+pub static COLOR_TRANSPARENT: Color = Color {r: 0, g: 0, b: 0, a: 0};
 
 impl Color {
     pub fn new(r: u8, g: u8, b: u8, a: u8) -> Self {

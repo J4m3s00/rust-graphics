@@ -1,0 +1,8 @@
+{
+    "files.associations": {
+        "xiosbase": "c",
+        "filesystem": "cpp"
+    },
+    "cmake.configureOnOpen": false,
+    "cmake.sourceDirectory": "/Users/lucaherzke/Documents/DEV/rust-graphics/backend"
+}

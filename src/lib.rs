@@ -1,32 +1,63 @@
 use app::App;
-use bindings::{c_pre_update_application, c_post_update_application, c_clean_up_editor, c_draw_rect, c_draw_circle, c_draw_line, c_draw_text, c_get_current_font_size, InitApp, c_start_application, AppEventType_AppEventType_Quit};
+use bindings::{
+    c_clean_up_editor, c_draw_circle, c_draw_line, c_draw_rect, c_draw_text,
+    c_get_current_font_size, c_poll_events, c_post_update_application, c_pre_update_application,
+    c_start_application, AppEventType_AppEventType_KeyDown, AppEventType_AppEventType_KeyUp,
+    AppEventType_AppEventType_MouseDown, AppEventType_AppEventType_MouseMove,
+    AppEventType_AppEventType_MouseUp, AppEventType_AppEventType_Quit,
+    AppEventType_AppEventType_WindowResize, InitApp,
+};
 use draw_command::DrawCommand;
 
 pub mod app;
-pub mod draw_command;
-pub mod rect;
-pub mod vec;
-pub mod text;
-pub mod color;
-pub mod circle;
 mod bindings;
+pub mod circle;
+pub mod color;
+pub mod draw_command;
+pub mod events;
+pub mod rect;
+pub mod text;
+pub mod vec;
 
-
+#[derive(Debug)]
 pub enum AppEvent {
     None,
     Quit,
+
+    WindowResize(i32, i32),
+
+    MouseDown { key: i32, x: i32, y: i32 },
+    MouseMove { x: i32, y: i32 },
+    MouseUp { key: i32, x: i32, y: i32 },
+
+    KeyDown(i32, u16),
+    KeyUp(i32, u16),
+    //TextInput(String),
 }
 
-pub fn update_editor<T>(mut render_func: T) -> AppEvent
-where
-    T: FnMut(),
-{
-    let event = unsafe { *c_pre_update_application() };
-    render_func();
-    unsafe { c_post_update_application() };
-    match event.type_ {
-        AppEventType_AppEventType_Quit => AppEvent::Quit,
-        _ => AppEvent::None,
+impl From<bindings::AppEvent> for AppEvent {
+    fn from(value: bindings::AppEvent) -> Self {
+        match value.type_ {
+            AppEventType_AppEventType_Quit => AppEvent::Quit,
+            AppEventType_AppEventType_WindowResize => AppEvent::WindowResize(value.x, value.y),
+            AppEventType_AppEventType_KeyDown => AppEvent::KeyDown(value.key, value.code as u16),
+            AppEventType_AppEventType_KeyUp => AppEvent::KeyUp(value.key, value.code as u16),
+            AppEventType_AppEventType_MouseDown => AppEvent::MouseDown {
+                key: value.key,
+                x: value.x,
+                y: value.y,
+            },
+            AppEventType_AppEventType_MouseUp => AppEvent::MouseUp {
+                key: value.key,
+                x: value.x,
+                y: value.y,
+            },
+            AppEventType_AppEventType_MouseMove => AppEvent::MouseMove {
+                x: value.x,
+                y: value.y,
+            },
+            _ => AppEvent::None,
+        }
     }
 }
 
@@ -94,14 +125,32 @@ pub fn run_app<A: App>(mut app: A) {
         println!("Error starting application");
         return;
     }
-
     app.on_start();
-    loop {
+    'app: loop {
         app.on_update();
-        match update_editor(|| app.on_update()) {
-            AppEvent::Quit => break,
-            AppEvent::None => {}
+
+        'event: loop {
+            let event = unsafe { c_poll_events() };
+            if event == std::ptr::null_mut() {
+                break 'event;
+            }
+
+            let event = AppEvent::from(unsafe { *event });
+            match event {
+                AppEvent::None => {}
+                AppEvent::Quit => {
+                    app.on_event(event);
+                    break 'app;
+                }
+                _ => {
+                    app.on_event(event);
+                }
+            }
         }
+
+        unsafe { c_pre_update_application() };
+        app.on_draw();
+        unsafe { c_post_update_application() };
     }
     app.on_stop();
     quit_editor();
