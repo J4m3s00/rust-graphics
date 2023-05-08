@@ -75,6 +75,10 @@ impl Rect {
         self.bottom - self.top
     }
 
+    pub fn center(&self) -> Vec2 {
+        Vec2::new(self.left + self.width() / 2., self.top + self.height() / 2.)
+    }
+
     pub fn size(&self) -> Vec2 {
         Vec2::new(self.width(), self.height())
     }

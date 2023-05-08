@@ -17,6 +17,8 @@ struct AppState
     SDL_Window *window = NULL;
     int window_width = 1280;
     int window_height = 720;
+    int draw_width = 1280;
+    int draw_height = 720;
     sr::Font font;
 };
 
@@ -84,13 +86,14 @@ c_start_application(const InitApp *app)
 
     state.window = window;
     state.font = font;
-    SDL_GL_GetDrawableSize(window, &state.window_width, &state.window_height);
+    SDL_GL_GetDrawableSize(window, &state.draw_width, &state.draw_height);
+    SDL_GetWindowSize(window, &state.window_width, &state.window_height);
     return 0;
 }
 
 EXPORT void c_pre_update_application()
 {
-    sr::srNewFrame(state.window_width, state.window_height);
+    sr::srNewFrame(state.draw_width, state.draw_height, state.window_width, state.window_height);
 }
 
 EXPORT AppEvent *c_poll_events()
@@ -112,9 +115,8 @@ EXPORT AppEvent *c_poll_events()
             result->type = AppEventType_Quit;
         else if (event.window.event == SDL_WINDOWEVENT_RESIZED)
         {
-            state.window_width = event.window.data1;
-            state.window_height = event.window.data2;
-            SDL_GL_GetDrawableSize(state.window, &state.window_width, &state.window_height);
+            SDL_GL_GetDrawableSize(state.window, &state.draw_width, &state.draw_height);
+            SDL_GetWindowSize(state.window, &state.window_width, &state.window_height);
             result->type = AppEventType_WindowResize;
             result->x = state.window_width;
             result->y = state.window_height;

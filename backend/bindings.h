@@ -60,8 +60,9 @@ EXPORT void c_post_update_application();
 EXPORT void c_clean_up_editor();
 
 EXPORT void c_draw_rect(float x, float y, float width, float height, float origin_x, float origin_y, float rotation, float corner_radius, bool fill, bool outline, uint32_t fill_color, uint32_t outline_color, float outline_thickness);
-EXPORT void c_draw_circle(float x, float y, float radius);
-EXPORT void c_draw_line(float x1, float y1, float x2, float y2);
-EXPORT void c_draw_text(float x, float y, const char *text);
+EXPORT void c_draw_circle(float x, float y, float radius, uint32_t color);
+EXPORT void c_draw_circle_outline(float x, float y, float radius, float line_thickness, uint32_t color);
+EXPORT void c_draw_line(float x1, float y1, float x2, float y2, float thickness, uint32_t color);
+EXPORT void c_draw_text(float x, float y, const char *text, uint32_t color);
 
 EXPORT float c_get_current_font_size();

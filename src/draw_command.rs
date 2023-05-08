@@ -1,4 +1,4 @@
-use crate::{circle::Circle, color::Color, rect::Rect, text::Text};
+use crate::{color::Color, text::Text, vec::Vec2};
 
 pub struct Fill {
     pub color: Color,
@@ -18,12 +18,22 @@ pub enum DrawCommand {
         fill: Option<Fill>,
         stroke: Option<Stroke>,
     },
-    Circle(Circle),
+    Circle {
+        center: Vec2,
+        radius: f32,
+        fill: Option<Fill>,
+        stroke: Option<Stroke>,
+    },
     Line {
         x1: f32,
         y1: f32,
         x2: f32,
         y2: f32,
+        stroke: Stroke,
     },
-    Text(Text),
+    Text {
+        text: String,
+        position: Vec2,
+        color: Color,
+    },
 }
