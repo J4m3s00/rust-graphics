@@ -82,7 +82,7 @@ c_start_application(const InitApp *app)
 
     sr::srLoad((sr::SRLoadProc)SDL_GL_GetProcAddress);
 
-    sr::Font font = sr::srLoadFont("/Users/lucaherzke/Documents/DEV/rust-ui/graphics/backend/deps/software-rendering/Roboto.ttf", 24);
+    sr::Font font = sr::srLoadFont("Roboto.ttf", 24);
 
     state.window = window;
     state.font = font;
