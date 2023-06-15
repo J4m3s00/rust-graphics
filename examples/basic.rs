@@ -6,7 +6,7 @@ use rust_graphics::{
     font::Font,
     init_app,
     rect::Rect,
-    run_app, run_draw_command,
+    run_draw_command,
     vec::Vec2,
 };
 
@@ -90,6 +90,6 @@ impl App for Editor {
 }
 
 fn main() -> Result<(), ()> {
-    init_app::<Editor>()?.configure(|_app| {}).start();
+    init_app::<Editor>()?.run();
     Ok(())
 }

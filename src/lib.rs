@@ -95,28 +95,7 @@ pub fn run_draw_command(command: &DrawCommand) {
     }
 }
 
-pub struct StartApp<A>
-where
-    A: App,
-{
-    _app: A,
-}
-
-impl<A> StartApp<A>
-where
-    A: App,
-{
-    pub fn start(self) {
-        run_app(self._app);
-    }
-
-    pub fn configure(mut self, config: impl FnOnce(&mut A)) -> Self {
-        config(&mut self._app);
-        self
-    }
-}
-
-pub fn init_app<A: App>() -> Result<StartApp<A>, ()> {
+pub fn init_app<A: App>() -> Result<A, ()> {
     let c_msg = match std::ffi::CString::new("Hello World") {
         Ok(s) => s,
         Err(_e) => return Err(()),
@@ -128,7 +107,7 @@ pub fn init_app<A: App>() -> Result<StartApp<A>, ()> {
         println!("Error starting application");
         return Err(());
     }
-    Ok(StartApp { _app: A::init() })
+    Ok(A::init())
 }
 
 pub fn run_app<A: App>(mut app: A) {
