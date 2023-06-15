@@ -1,4 +1,4 @@
-use crate::{color::Color, text::Text, vec::Vec2};
+use crate::{color::Color, font::Font, vec::Vec2};
 
 pub struct Fill {
     pub color: Color,
@@ -32,6 +32,7 @@ pub enum DrawCommand {
         stroke: Stroke,
     },
     Text {
+        font: Font,
         text: String,
         position: Vec2,
         color: Color,

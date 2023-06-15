@@ -1,23 +1,22 @@
 use app::App;
 use bindings::{
-    c_clean_up_editor, c_draw_circle, c_draw_line, c_draw_rect, c_draw_text,
-    c_get_current_font_size, c_poll_events, c_post_update_application, c_pre_update_application,
-    c_start_application, InitApp, c_draw_circle_outline,
+    c_clean_up_editor, c_draw_circle, c_draw_circle_outline, c_draw_line, c_draw_rect, c_draw_text,
+    c_poll_events, c_post_update_application, c_pre_update_application, c_start_application,
+    InitApp,
 };
-use color::{Color, COLOR_BLACK, COLOR_WHITE};
 use draw_command::DrawCommand;
 use events::app_events::AppEvent;
 
 pub mod app;
-mod bindings;
+pub(crate) mod bindings;
 pub mod circle;
 pub mod color;
 pub mod draw_command;
 pub mod events;
+pub mod font;
 pub mod rect;
 pub mod text;
 pub mod vec;
-
 
 pub fn quit_editor() {
     unsafe { c_clean_up_editor() };
@@ -49,21 +48,44 @@ pub fn run_draw_command(command: &DrawCommand) {
                 stroke.as_ref().map(|s| s.width).unwrap_or(0.0),
             )
         },
-        DrawCommand::Circle { center, radius, fill, stroke } => unsafe {
+        DrawCommand::Circle {
+            center,
+            radius,
+            fill,
+            stroke,
+        } => unsafe {
             if let Some(fill) = fill {
                 c_draw_circle(center.x, center.y, *radius, fill.color.as_int());
             }
             if let Some(stroke) = stroke {
-                c_draw_circle_outline(center.x, center.y, *radius, stroke.width, stroke.color.as_int());
+                c_draw_circle_outline(
+                    center.x,
+                    center.y,
+                    *radius,
+                    stroke.width,
+                    stroke.color.as_int(),
+                );
             }
         },
-        DrawCommand::Line { x1, y1, x2, y2, stroke} => unsafe {
+        DrawCommand::Line {
+            x1,
+            y1,
+            x2,
+            y2,
+            stroke,
+        } => unsafe {
             c_draw_line(*x1, *y1, *x2, *y2, stroke.width, stroke.color.as_int());
         },
-        DrawCommand::Text { text, position, color } => unsafe {
+        DrawCommand::Text {
+            font,
+            text,
+            position,
+            color,
+        } => unsafe {
             let c_msg = std::ffi::CString::new(text.as_str())
                 .unwrap_or(std::ffi::CString::new("ERROR Converting string").unwrap());
             c_draw_text(
+                font.handle(),
                 position.x,
                 position.y,
                 c_msg.as_ptr(),
@@ -71,10 +93,6 @@ pub fn run_draw_command(command: &DrawCommand) {
             );
         },
     }
-}
-
-pub fn get_current_font_size() -> f32 {
-    unsafe { c_get_current_font_size() }
 }
 
 pub fn run_app<A: App>(mut app: A) {

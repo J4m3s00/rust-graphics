@@ -3,12 +3,14 @@ use rust_graphics::{
     color::{COLOR_BLACK, COLOR_CYAN, COLOR_GREEN},
     draw_command::{DrawCommand, Fill, Stroke},
     events::app_events::AppEvent,
+    font::Font,
     rect::Rect,
     run_app, run_draw_command,
     vec::Vec2,
 };
 
 struct Editor {
+    font: Option<Font>,
     rect: Rect,
     mouse_pos: Vec2,
     mouse_down: bool,
@@ -17,6 +19,7 @@ struct Editor {
 impl Editor {
     fn new() -> Self {
         Self {
+            font: None,
             rect: Rect::new_from_xy(24., 24., 100., 100.),
             mouse_pos: Vec2::zero(),
             mouse_down: false,
@@ -25,7 +28,9 @@ impl Editor {
 }
 
 impl App for Editor {
-    fn on_start(&mut self) {}
+    fn on_start(&mut self) {
+        self.font = Some(Font::from_file("Roboto.ttf", 24));
+    }
 
     fn on_event(&mut self, event: AppEvent) {
         match event {
@@ -68,11 +73,14 @@ impl App for Editor {
                 color: COLOR_BLACK,
             }),
         });
-        run_draw_command(&DrawCommand::Text {
-            text: "Hello World!gg".into(),
-            position: self.rect.center(),
-            color: COLOR_BLACK,
-        });
+        if let Some(font) = &self.font {
+            run_draw_command(&DrawCommand::Text {
+                font: font.clone(),
+                text: "Hello World!gg".into(),
+                position: self.rect.center(),
+                color: COLOR_BLACK,
+            });
+        }
         run_draw_command(&DrawCommand::Line {
             x1: self.rect.left,
             y1: self.rect.center().y,

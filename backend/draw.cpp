@@ -10,8 +10,6 @@
 #include "glad/glad.h"
 #include "renderer/renderer.h"
 
-#include "intern.h"
-
 EXPORT void c_draw_rect(float x, float y, float width, float height, float origin_x, float origin_y, float rotation, float corner_radius, bool fill, bool outline, uint32_t fill_color, uint32_t outline_color, float outline_thickness)
 {
     sr::PathType path_type = 0;
@@ -38,7 +36,6 @@ EXPORT void c_draw_circle_outline(float x, float y, float radius, float line_thi
     sr::srDrawCircleOutline({x, y}, radius, line_thickness, color);
 }
 
-
 EXPORT void c_draw_line(float x1, float y1, float x2, float y2, float thickness, uint32_t color)
 {
     sr::srBeginPath(sr::PathType_Stroke);
@@ -48,7 +45,32 @@ EXPORT void c_draw_line(float x1, float y1, float x2, float y2, float thickness,
     sr::srPathLineTo({x2, y2});
     sr::srEndPath();
 }
-EXPORT void c_draw_text(float x, float y, const char *text, uint32_t color)
+EXPORT void c_draw_text(unsigned int font, float x, float y, const char *text, uint32_t color)
 {
-    sr::srDrawText(get_current_font(), text, {x, y}, color);
+    sr::srDrawText(font, text, {x, y}, color);
+}
+
+EXPORT unsigned int c_load_font(const char *path, int size)
+{
+    return sr::srLoadFont(path, size);
+}
+
+EXPORT int c_font_get_line_height(unsigned int font)
+{
+    return sr::srFontGetLineHeight(font);
+}
+
+EXPORT int c_font_get_line_top(unsigned int font)
+{
+    return sr::srFontGetLineTop(font);
+}
+
+EXPORT int c_font_get_text_width(unsigned int font, const char *text)
+{
+    return sr::srFontGetTextWidth(font, text);
+}
+
+EXPORT int c_font_get_text_height(unsigned int font, const char *text)
+{
+    return sr::srFontGetTextHeight(font, text);
 }

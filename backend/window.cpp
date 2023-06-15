@@ -9,7 +9,6 @@
 #include "glad/glad.h"
 #include "SDL.h"
 #include "renderer/renderer.h"
-#include "intern.h"
 
 struct AppState
 {
@@ -19,7 +18,6 @@ struct AppState
     int window_height = 720;
     int draw_width = 1280;
     int draw_height = 720;
-    sr::Font font;
 };
 
 static AppState state;
@@ -82,10 +80,7 @@ c_start_application(const InitApp *app)
 
     sr::srLoad((sr::SRLoadProc)SDL_GL_GetProcAddress);
 
-    sr::Font font = sr::srLoadFont("Roboto.ttf", 24);
-
     state.window = window;
-    state.font = font;
     SDL_GL_GetDrawableSize(window, &state.draw_width, &state.draw_height);
     SDL_GetWindowSize(window, &state.window_width, &state.window_height);
     return 0;
@@ -150,10 +145,9 @@ EXPORT AppEvent *c_poll_events()
         result->y = event.motion.y;
         break;
     }
-    
+
     return result;
 }
-
 
 EXPORT void c_post_update_application()
 {
@@ -167,14 +161,4 @@ EXPORT void c_clean_up_editor()
     sr::srTerminate();
     SDL_DestroyWindow(state.window);
     SDL_Quit();
-}
-
-sr::Font get_current_font()
-{
-    return state.font;
-}
-
-EXPORT float c_get_current_font_size()
-{
-    return state.font.Size;
 }
