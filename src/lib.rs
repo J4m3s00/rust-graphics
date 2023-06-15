@@ -111,6 +111,7 @@ pub fn init_app<A: App>() -> Result<A, ()> {
 }
 
 pub fn run_app<A: App>(mut app: A) {
+    app.on_start();
     'app: loop {
         app.on_update();
 
