@@ -15,7 +15,6 @@ pub mod draw_command;
 pub mod events;
 pub mod font;
 pub mod rect;
-pub mod text;
 pub mod vec;
 
 pub fn quit_editor() {
