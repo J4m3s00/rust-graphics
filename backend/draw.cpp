@@ -65,6 +65,11 @@ EXPORT int c_font_get_line_top(unsigned int font)
     return sr::srFontGetLineTop(font);
 }
 
+EXPORT int c_font_get_line_bottom(unsigned int font)
+{
+    return sr::srFontGetLineBottom(font);
+}
+
 EXPORT int c_font_get_text_width(unsigned int font, const char *text)
 {
     return sr::srFontGetTextWidth(font, text);

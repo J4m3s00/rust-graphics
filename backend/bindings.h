@@ -69,6 +69,7 @@ EXPORT void c_draw_text(unsigned int font, float x, float y, const char *text, u
 EXPORT unsigned int c_load_font(const char *path, int size);
 EXPORT int c_font_get_line_height(unsigned int font);
 EXPORT int c_font_get_line_top(unsigned int font);
+EXPORT int c_font_get_line_bottom(unsigned int font);
 
 EXPORT int c_font_get_text_width(unsigned int font, const char *text);
 EXPORT int c_font_get_text_height(unsigned int font, const char *text);

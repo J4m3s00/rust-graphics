@@ -1,6 +1,6 @@
 use crate::bindings::{
-    c_font_get_line_height, c_font_get_line_top, c_font_get_text_height, c_font_get_text_width,
-    c_load_font,
+    c_font_get_line_bottom, c_font_get_line_height, c_font_get_line_top, c_font_get_text_height,
+    c_font_get_text_width, c_load_font,
 };
 
 #[derive(Clone, Copy, Debug)]
@@ -43,6 +43,10 @@ impl Font {
 
     pub fn get_line_top(&self) -> i32 {
         unsafe { c_font_get_line_top(self.handle) }
+    }
+
+    pub fn get_line_bottom(&self) -> i32 {
+        unsafe { c_font_get_line_bottom(self.handle) }
     }
 
     pub fn handle(&self) -> u32 {
