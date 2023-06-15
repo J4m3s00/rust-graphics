@@ -4,6 +4,7 @@ use rust_graphics::{
     draw_command::{DrawCommand, Fill, Stroke},
     events::app_events::AppEvent,
     font::Font,
+    init_app,
     rect::Rect,
     run_app, run_draw_command,
     vec::Vec2,
@@ -17,7 +18,7 @@ struct Editor {
 }
 
 impl App for Editor {
-    fn on_start() -> Self {
+    fn init() -> Self {
         Self {
             font: Font::from_file("Roboto.ttf", 24),
             rect: Rect::new_from_xy(24., 24., 100., 100.),
@@ -25,6 +26,8 @@ impl App for Editor {
             mouse_down: false,
         }
     }
+
+    fn on_start(&mut self) {}
 
     fn on_event(&mut self, event: AppEvent) {
         match event {
@@ -86,6 +89,7 @@ impl App for Editor {
     }
 }
 
-fn main() {
-    run_app::<Editor>();
+fn main() -> Result<(), ()> {
+    init_app::<Editor>()?.configure(|_app| {}).start();
+    Ok(())
 }

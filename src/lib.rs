@@ -95,19 +95,43 @@ pub fn run_draw_command(command: &DrawCommand) {
     }
 }
 
-pub fn run_app<A: App>() {
+pub struct StartApp<A>
+where
+    A: App,
+{
+    _app: A,
+}
+
+impl<A> StartApp<A>
+where
+    A: App,
+{
+    pub fn start(self) {
+        run_app(self._app);
+    }
+
+    pub fn configure(mut self, config: impl FnOnce(&mut A)) -> Self {
+        config(&mut self._app);
+        self
+    }
+}
+
+pub fn init_app<A: App>() -> Result<StartApp<A>, ()> {
     let c_msg = match std::ffi::CString::new("Hello World") {
         Ok(s) => s,
-        Err(_e) => return,
+        Err(_e) => return Err(()),
     };
     let init_app = InitApp {
         title: c_msg.as_ptr(),
     };
     if unsafe { c_start_application(&init_app) } != 0 {
         println!("Error starting application");
-        return;
+        return Err(());
     }
-    let mut app = A::on_start();
+    Ok(StartApp { _app: A::init() })
+}
+
+pub fn run_app<A: App>(mut app: A) {
     'app: loop {
         app.on_update();
 
