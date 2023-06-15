@@ -10,26 +10,20 @@ use rust_graphics::{
 };
 
 struct Editor {
-    font: Option<Font>,
+    font: Font,
     rect: Rect,
     mouse_pos: Vec2,
     mouse_down: bool,
 }
 
-impl Editor {
-    fn new() -> Self {
+impl App for Editor {
+    fn on_start() -> Self {
         Self {
-            font: None,
+            font: Font::from_file("Roboto.ttf", 24),
             rect: Rect::new_from_xy(24., 24., 100., 100.),
             mouse_pos: Vec2::zero(),
             mouse_down: false,
         }
-    }
-}
-
-impl App for Editor {
-    fn on_start(&mut self) {
-        self.font = Some(Font::from_file("Roboto.ttf", 24));
     }
 
     fn on_event(&mut self, event: AppEvent) {
@@ -73,14 +67,12 @@ impl App for Editor {
                 color: COLOR_BLACK,
             }),
         });
-        if let Some(font) = &self.font {
-            run_draw_command(&DrawCommand::Text {
-                font: font.clone(),
-                text: "Hello World!gg".into(),
-                position: self.rect.center(),
-                color: COLOR_BLACK,
-            });
-        }
+        run_draw_command(&DrawCommand::Text {
+            font: self.font.clone(),
+            text: "Hello World!gg".into(),
+            position: self.rect.center(),
+            color: COLOR_BLACK,
+        });
         run_draw_command(&DrawCommand::Line {
             x1: self.rect.left,
             y1: self.rect.center().y,
@@ -95,5 +87,5 @@ impl App for Editor {
 }
 
 fn main() {
-    run_app(Editor::new())
+    run_app::<Editor>();
 }

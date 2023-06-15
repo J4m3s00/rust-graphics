@@ -95,7 +95,7 @@ pub fn run_draw_command(command: &DrawCommand) {
     }
 }
 
-pub fn run_app<A: App>(mut app: A) {
+pub fn run_app<A: App>() {
     let c_msg = match std::ffi::CString::new("Hello World") {
         Ok(s) => s,
         Err(_e) => return,
@@ -107,7 +107,7 @@ pub fn run_app<A: App>(mut app: A) {
         println!("Error starting application");
         return;
     }
-    app.on_start();
+    let mut app = A::on_start();
     'app: loop {
         app.on_update();
 
