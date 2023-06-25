@@ -108,7 +108,7 @@ EXPORT AppEvent *c_poll_events()
     case SDL_WINDOWEVENT:
         if (event.window.event == SDL_WINDOWEVENT_CLOSE && event.window.windowID == SDL_GetWindowID(state.window))
             result->type = AppEventType_Quit;
-        else if (event.window.event == SDL_WINDOWEVENT_RESIZED)
+        else if (event.window.event == SDL_WINDOWEVENT_SIZE_CHANGED)
         {
             SDL_GL_GetDrawableSize(state.window, &state.draw_width, &state.draw_height);
             SDL_GetWindowSize(state.window, &state.window_width, &state.window_height);
