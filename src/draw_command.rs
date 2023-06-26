@@ -1,9 +1,11 @@
 use crate::{color::Color, font::Font, vec::Vec2};
 
+#[derive(Clone, Copy)]
 pub struct Fill {
     pub color: Color,
 }
 
+#[derive(Clone, Copy)]
 pub struct Stroke {
     pub width: f32,
     pub color: Color,
