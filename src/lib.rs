@@ -4,6 +4,7 @@ use bindings::{
     c_poll_events, c_post_update_application, c_pre_update_application, c_start_application,
     InitApp,
 };
+use color::COLOR_BLACK;
 use draw_command::DrawCommand;
 use events::app_events::AppEvent;
 
@@ -82,6 +83,7 @@ pub fn run_draw_command(command: &DrawCommand) {
             text,
             position,
             color,
+            stroke,
         } => unsafe {
             let c_msg = std::ffi::CString::new(text.as_str())
                 .unwrap_or(std::ffi::CString::new("ERROR Converting string").unwrap());
@@ -91,6 +93,10 @@ pub fn run_draw_command(command: &DrawCommand) {
                 position.y,
                 c_msg.as_ptr(),
                 color.as_int(),
+                stroke.map(|s| s.width).unwrap_or(0.),
+                stroke
+                    .map(|s| s.color.as_int())
+                    .unwrap_or(COLOR_BLACK.as_int()),
             );
         },
     }

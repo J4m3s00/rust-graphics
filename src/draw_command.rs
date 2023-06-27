@@ -1,11 +1,11 @@
 use crate::{color::Color, font::Font, vec::Vec2};
 
-#[derive(Clone, Copy)]
+#[derive(Clone, Copy, Debug)]
 pub struct Fill {
     pub color: Color,
 }
 
-#[derive(Clone, Copy)]
+#[derive(Clone, Copy, Debug)]
 pub struct Stroke {
     pub width: f32,
     pub color: Color,
@@ -38,5 +38,6 @@ pub enum DrawCommand {
         text: String,
         position: Vec2,
         color: Color,
+        stroke: Option<Stroke>,
     },
 }

@@ -75,6 +75,7 @@ impl App for Editor {
             text: "Hello World!gg".into(),
             position: self.rect.center(),
             color: COLOR_BLACK,
+            stroke: None,
         });
         run_draw_command(&DrawCommand::Line {
             x1: self.rect.left,
