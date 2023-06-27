@@ -18,6 +18,7 @@ typedef int bool; // or #define bool int
 #endif
 
 #include <stdint.h>
+#include "deps/software-rendering/deps/sdl2/include/SDL_keycode.h"
 
 typedef struct InitApp
 {

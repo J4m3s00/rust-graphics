@@ -8,12 +8,14 @@ use draw_command::DrawCommand;
 use events::app_events::AppEvent;
 
 pub mod app;
+
 pub(crate) mod bindings;
 pub mod circle;
 pub mod color;
 pub mod draw_command;
 pub mod events;
 pub mod font;
+pub mod keycodes;
 pub mod rect;
 pub mod vec;
 

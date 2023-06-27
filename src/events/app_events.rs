@@ -1,4 +1,12 @@
-use crate::bindings::{self, AppEventType_AppEventType_Quit, AppEventType_AppEventType_WindowResize, AppEventType_AppEventType_KeyDown, AppEventType_AppEventType_KeyUp, AppEventType_AppEventType_MouseDown, AppEventType_AppEventType_MouseUp, AppEventType_AppEventType_MouseMove};
+use crate::{
+    bindings::{
+        self, AppEventType_AppEventType_KeyDown, AppEventType_AppEventType_KeyUp,
+        AppEventType_AppEventType_MouseDown, AppEventType_AppEventType_MouseMove,
+        AppEventType_AppEventType_MouseUp, AppEventType_AppEventType_Quit,
+        AppEventType_AppEventType_WindowResize,
+    },
+    keycodes::KeyCode,
+};
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////////////////////////
@@ -36,7 +44,6 @@ impl From<u16> for KeyMods {
     }
 }
 
-
 #[derive(Debug)]
 pub enum AppEvent {
     None,
@@ -48,18 +55,23 @@ pub enum AppEvent {
     MouseMove { x: i32, y: i32 },
     MouseUp { key: i32, x: i32, y: i32 },
 
-    KeyDown(i32, KeyMods),
-    KeyUp(i32, KeyMods),
+    KeyDown(KeyCode, KeyMods),
+    KeyUp(KeyCode, KeyMods),
     //TextInput(String),
 }
 
 impl From<bindings::AppEvent> for AppEvent {
     fn from(value: bindings::AppEvent) -> Self {
+        #[allow(non_upper_case_globals)]
         match value.type_ {
             AppEventType_AppEventType_Quit => AppEvent::Quit,
             AppEventType_AppEventType_WindowResize => AppEvent::WindowResize(value.x, value.y),
-            AppEventType_AppEventType_KeyDown => AppEvent::KeyDown(value.key, KeyMods::from(value.code as u16)),
-            AppEventType_AppEventType_KeyUp => AppEvent::KeyUp(value.key, KeyMods::from(value.code as u16)),
+            AppEventType_AppEventType_KeyDown => {
+                AppEvent::KeyDown(value.key.into(), KeyMods::from(value.code as u16))
+            }
+            AppEventType_AppEventType_KeyUp => {
+                AppEvent::KeyUp(value.key.into(), KeyMods::from(value.code as u16))
+            }
             AppEventType_AppEventType_MouseDown => AppEvent::MouseDown {
                 key: value.key,
                 x: value.x,
