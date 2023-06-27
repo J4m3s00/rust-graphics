@@ -222,9 +222,8 @@ pub enum KeyCode {
     KpBackspace,
 }
 
-impl From<u32> for KeyCode {
-    fn from(value: u32) -> Self {
-        let value = value as SDL_KeyCode;
+impl From<i32> for KeyCode {
+    fn from(value: i32) -> Self {
         #[allow(non_upper_case_globals)]
         match value {
             SDL_KeyCode_SDLK_UNKNOWN => Self::Unknown,
