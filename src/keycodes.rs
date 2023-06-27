@@ -224,6 +224,7 @@ pub enum KeyCode {
 
 impl From<i32> for KeyCode {
     fn from(value: i32) -> Self {
+        let value = value as SDL_KeyCode;
         #[allow(non_upper_case_globals)]
         match value {
             SDL_KeyCode_SDLK_UNKNOWN => Self::Unknown,
