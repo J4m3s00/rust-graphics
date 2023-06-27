@@ -137,6 +137,10 @@ pub fn run_app<A: App>(mut app: A) {
             }
         }
 
+        if app.should_quit() {
+            break 'app;
+        }
+
         unsafe { c_pre_update_application() };
         app.on_draw();
         unsafe { c_post_update_application() };

@@ -7,6 +7,9 @@ pub trait App {
     fn on_event(&mut self, _event: AppEvent) {}
     fn on_stop(&mut self) {}
     fn on_draw(&mut self) {}
+    fn should_quit(&self) -> bool {
+        false
+    }
 
     fn run(self)
     where
