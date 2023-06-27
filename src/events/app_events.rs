@@ -67,11 +67,11 @@ impl From<bindings::AppEvent> for AppEvent {
             AppEventType_AppEventType_Quit => AppEvent::Quit,
             AppEventType_AppEventType_WindowResize => AppEvent::WindowResize(value.x, value.y),
             AppEventType_AppEventType_KeyDown => AppEvent::KeyDown(
-                KeyCode::from(value.key as u32),
+                KeyCode::from(value.key as i32),
                 KeyMods::from(value.code as u16),
             ),
             AppEventType_AppEventType_KeyUp => AppEvent::KeyUp(
-                KeyCode::from(value.key as u32),
+                KeyCode::from(value.key as i32),
                 KeyMods::from(value.code as u16),
             ),
             AppEventType_AppEventType_MouseDown => AppEvent::MouseDown {
