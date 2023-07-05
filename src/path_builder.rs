@@ -8,7 +8,7 @@ use crate::{
     vec::Vec2,
 };
 
-#[derive(Clone, PartialEq)]
+#[derive(Clone, PartialEq, Debug)]
 enum PathElem {
     MoveTo(Vec2),
     LineTo(Vec2),
@@ -24,7 +24,7 @@ enum PathElem {
     Close,
 }
 
-#[derive(Clone, Default)]
+#[derive(Clone, Default, Debug)]
 pub struct Path {
     elems: Vec<(PathElem, bool)>,
     pub fill: Option<Fill>,
