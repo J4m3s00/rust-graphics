@@ -74,3 +74,12 @@ EXPORT int c_font_get_line_bottom(unsigned int font);
 
 EXPORT int c_font_get_text_width(unsigned int font, const char *text);
 EXPORT int c_font_get_text_height(unsigned int font, const char *text);
+
+// Paths
+EXPORT void c_path_begin(bool stroke, bool fill, float stroke_width, uint32_t stroke_color, uint32_t fill_color);
+EXPORT void c_path_end(bool closed);
+EXPORT void c_path_move_to(float x, float y);
+EXPORT void c_path_line_to(float x, float y);
+EXPORT void c_path_cubic_bezier_curve_to(float cp1x, float cp1y, float cp2x, float cp2y, float x, float y, int segment_count);
+EXPORT void c_path_quadr_bezier_curve_to(float cp1x, float cp1y, float x, float y, int segment_count);
+EXPORT void c_path_ellips_arc_to(float x1, float y1, float angle, float radius_x, float radius_y, bool large_arc_flag, bool sweep_flag, int num_segments);

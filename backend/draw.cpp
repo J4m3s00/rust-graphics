@@ -79,3 +79,39 @@ EXPORT int c_font_get_text_height(unsigned int font, const char *text)
 {
     return sr::srFontGetTextHeight(font, text);
 }
+
+EXPORT void c_path_begin(bool stroke, bool fill, float stroke_width, uint32_t stroke_color, uint32_t fill_color)
+{
+    sr::srBeginPath((stroke ? sr::PathType_Stroke : 0) | (fill ? sr::PathType_Fill : 0));
+    sr::srPathSetStrokeEnabled(stroke);
+    sr::srPathSetFillEnabled(fill);
+
+    sr::srPathSetStrokeWidth(stroke_width);
+    sr::srPathSetStrokeColor(stroke_color);
+    sr::srPathSetFillColor(fill_color);
+}
+
+EXPORT void c_path_end(bool closed)
+{
+    sr::srEndPath(closed);
+}
+
+EXPORT void c_path_line_to(float x, float y)
+{
+    sr::srPathLineTo({x, y});
+}
+
+EXPORT void c_path_cubic_bezier_curve_to(float cp1x, float cp1y, float cp2x, float cp2y, float x, float y, int segment_count)
+{
+    sr::srPathCubicBezierTo({cp1x, cp1y}, {cp2x, cp2y}, {x, y}, segment_count);
+}
+
+EXPORT void c_path_quadr_bezier_curve_to(float cp1x, float cp1y, float x, float y, int segment_count)
+{
+    sr::srPathQuadraticBezierTo({cp1x, cp1y}, {x, y}, segment_count);
+}
+
+EXPORT void c_path_ellips_arc_to(float x1, float y1, float angle, float radius_x, float radius_y, bool large_arc_flag, bool sweep_flag, int num_segments)
+{
+    sr::srPathEllipticalArc({x1, y1}, angle, radius_x, radius_y, large_arc_flag, sweep_flag, num_segments);
+}

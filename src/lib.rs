@@ -17,6 +17,7 @@ pub mod draw_command;
 pub mod events;
 pub mod font;
 pub mod keycodes;
+pub mod path_builder;
 pub mod rect;
 pub mod vec;
 
@@ -98,6 +99,9 @@ pub fn run_draw_command(command: &DrawCommand) {
                     .map(|s| s.color.as_int())
                     .unwrap_or(COLOR_BLACK.as_int()),
             );
+        },
+        DrawCommand::Path(path) => unsafe {
+            path.execute();
         },
     }
 }

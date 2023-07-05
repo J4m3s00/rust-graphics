@@ -1,12 +1,12 @@
 use std::ops::{Add, AddAssign, Mul, Sub};
 
-#[derive(Debug, Clone, Copy, Default)]
+#[derive(Debug, Clone, Copy, Default, PartialEq)]
 pub struct Vec2 {
     pub x: f32,
     pub y: f32,
 }
 
-#[derive(Debug, Clone, Copy, Default)]
+#[derive(Debug, Clone, Copy, Default, PartialEq)]
 pub struct Vec3 {
     pub x: f32,
     pub y: f32,
@@ -27,7 +27,7 @@ impl Vec2 {
     }
 
     pub fn zero() -> Self {
-        Self::new(0., 0.,)
+        Self::new(0., 0.)
     }
 }
 
@@ -37,7 +37,7 @@ impl Vec3 {
     }
 
     pub fn zero() -> Self {
-        Self::new(0., 0., 0.,)
+        Self::new(0., 0., 0.)
     }
 }
 
@@ -47,7 +47,7 @@ impl Vec4 {
     }
 
     pub fn zero() -> Self {
-        Self::new(0., 0., 0., 0.,)
+        Self::new(0., 0., 0., 0.)
     }
 }
 
