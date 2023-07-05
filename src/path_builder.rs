@@ -12,6 +12,8 @@ use crate::{
 enum PathElem {
     MoveTo(Vec2),
     LineTo(Vec2),
+    Vert(f32),
+    Horiz(f32),
     QuadTo(Vec2, Vec2),
     CubicTo(Vec2, Vec2, Vec2),
     ArcTo {
@@ -80,6 +82,16 @@ impl Path {
                 } //c_path_move_to(to.x, to.y
                 (PathElem::LineTo(to), _) => {
                     let to = get_pos(to.clone());
+                    c_path_line_to(to.x, to.y);
+                    last_pos = to;
+                }
+                (PathElem::Vert(y), _) => {
+                    let to = Vec2::new(last_pos.x, *y);
+                    c_path_line_to(to.x, to.y);
+                    last_pos = to;
+                }
+                (PathElem::Horiz(x), _) => {
+                    let to = Vec2::new(*x, last_pos.y);
                     c_path_line_to(to.x, to.y);
                     last_pos = to;
                 }
@@ -163,6 +175,22 @@ impl PathBuilder {
 
     pub fn line_to_rel(&mut self, to: impl Into<Vec2>) {
         self.path.elems.push((PathElem::LineTo(to.into()), true));
+    }
+
+    pub fn vert(&mut self, y: f32) {
+        self.path.elems.push((PathElem::Vert(y), false));
+    }
+
+    pub fn vert_rel(&mut self, y: f32) {
+        self.path.elems.push((PathElem::Vert(y), true));
+    }
+
+    pub fn horiz(&mut self, x: f32) {
+        self.path.elems.push((PathElem::Horiz(x), false));
+    }
+
+    pub fn horiz_rel(&mut self, x: f32) {
+        self.path.elems.push((PathElem::Horiz(x), true));
     }
 
     pub fn quad_to(&mut self, ctrl: impl Into<Vec2>, to: impl Into<Vec2>) {
