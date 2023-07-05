@@ -115,44 +115,40 @@ impl PathBuilder {
         }
     }
 
-    pub fn move_to(mut self, to: impl Into<Vec2>) -> Self {
+    pub fn move_to(&mut self, to: impl Into<Vec2>) {
         let to = to.into();
         self.path.elems.push(PathElem::MoveTo(to.into()));
-        self
     }
 
-    pub fn line_to(mut self, to: impl Into<Vec2>) -> Self {
+    pub fn line_to(&mut self, to: impl Into<Vec2>) {
         self.path.elems.push(PathElem::LineTo(to.into()));
-        self
     }
 
-    pub fn quad_to(mut self, ctrl: impl Into<Vec2>, to: impl Into<Vec2>) -> Self {
+    pub fn quad_to(&mut self, ctrl: impl Into<Vec2>, to: impl Into<Vec2>) {
         self.path
             .elems
             .push(PathElem::QuadTo(ctrl.into(), to.into()));
-        self
     }
 
     pub fn cubic_to(
-        mut self,
+        &mut self,
         ctrl1: impl Into<Vec2>,
         ctrl2: impl Into<Vec2>,
         to: impl Into<Vec2>,
-    ) -> Self {
+    ) {
         self.path
             .elems
             .push(PathElem::CubicTo(ctrl1.into(), ctrl2.into(), to.into()));
-        self
     }
 
     pub fn arc_to(
-        mut self,
+        &mut self,
         to: impl Into<Vec2>,
         radius: impl Into<Vec2>,
         angle: f32,
         large_arc_flag: bool,
         sweep_flag: bool,
-    ) -> Self {
+    ) {
         self.path.elems.push(PathElem::ArcTo {
             to: to.into(),
             radius: radius.into(),
@@ -160,23 +156,19 @@ impl PathBuilder {
             large_arc_flag,
             sweep_flag,
         });
-        self
     }
 
-    pub fn close(mut self) -> Self {
+    pub fn close(&mut self) {
         self.path.elems.push(PathElem::Close);
         self.path.closed = true;
-        self
     }
 
-    pub fn fill(mut self, fill: Option<Fill>) -> Self {
+    pub fn fill(&mut self, fill: Option<Fill>) {
         self.path.fill = fill;
-        self
     }
 
-    pub fn stroke(mut self, stroke: Option<Stroke>) -> Self {
+    pub fn stroke(&mut self, stroke: Option<Stroke>) {
         self.path.stroke = stroke;
-        self
     }
 
     pub fn build(self) -> Path {

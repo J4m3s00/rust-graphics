@@ -13,16 +13,17 @@ struct Editor {
 
 impl App for Editor {
     fn init() -> Self {
+        let mut builder = PathBuilder::new();
+        builder.stroke(Some(Stroke::new(COLOR_BLACK, 5.0)));
+        //builder.fill(Some(Fill::new(COLOR_MAGENTA)));
+        builder.move_to((400.0, 400.0));
+        builder.cubic_to((400.0, 200.0), (500.0, 200.0), (500.0, 400.0));
+        builder.move_to((100, 100));
+        builder.line_to((200, 100));
+        builder.line_to((200, 200));
+
         Self {
-            path: PathBuilder::new()
-                .stroke(Some(Stroke::new(COLOR_BLACK, 5.0)))
-                //.fill(Some(Fill::new(COLOR_MAGENTA)))
-                .move_to((400.0, 400.0))
-                .cubic_to((400.0, 200.0), (500.0, 200.0), (500.0, 400.0))
-                .move_to((100, 100))
-                .line_to((200, 100))
-                .line_to((200, 200))
-                .build(),
+            path: builder.build(),
         }
     }
 
