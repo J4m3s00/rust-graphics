@@ -26,7 +26,7 @@ enum PathElem {
 
 #[derive(Clone, Default)]
 pub struct Path {
-    elems: Vec<PathElem>,
+    elems: Vec<(PathElem, bool)>,
     pub fill: Option<Fill>,
     pub stroke: Option<Stroke>,
     pub closed: bool,
@@ -49,6 +49,7 @@ impl Path {
 
     pub unsafe fn execute(&self) {
         let mut justed_closed = false;
+        let mut last_pos = Vec2::default();
         for elem in &self.elems {
             let closed = justed_closed;
             justed_closed = false;
@@ -57,42 +58,70 @@ impl Path {
                 self.begin();
             }
 
+            let get_pos = |pos: Vec2| -> Vec2 {
+                if elem.1 {
+                    pos + last_pos
+                } else {
+                    pos
+                }
+            };
+
             match elem {
-                PathElem::MoveTo(to) => {
+                (PathElem::MoveTo(to), _) => {
                     if !closed {
                         c_path_end(false as i32);
                         self.begin();
                     }
+                    let to = get_pos(to.clone());
                     c_path_line_to(to.x, to.y);
+                    last_pos = to;
                 } //c_path_move_to(to.x, to.y
-                PathElem::LineTo(to) => {
+                (PathElem::LineTo(to), _) => {
+                    let to = get_pos(to.clone());
                     c_path_line_to(to.x, to.y);
+                    last_pos = to;
                 }
-                PathElem::QuadTo(ctrl, to) => {
+                (PathElem::QuadTo(ctrl, to), _) => {
+                    let to = get_pos(to.clone());
+                    let ctrl = get_pos(ctrl.clone());
                     c_path_quadr_bezier_curve_to(ctrl.x, ctrl.y, to.x, to.y, 22);
+                    last_pos = to;
                 }
-                PathElem::CubicTo(ctrl1, ctrl2, to) => {
+                (PathElem::CubicTo(ctrl1, ctrl2, to), _) => {
+                    let to = get_pos(to.clone());
+                    let ctrl1 = get_pos(ctrl1.clone());
+                    let ctrl2 = get_pos(ctrl2.clone());
                     c_path_cubic_bezier_curve_to(
                         ctrl1.x, ctrl1.y, ctrl2.x, ctrl2.y, to.x, to.y, 22,
                     );
+                    last_pos = to;
                 }
-                PathElem::ArcTo {
-                    to,
-                    radius,
-                    angle,
-                    large_arc_flag,
-                    sweep_flag,
-                } => c_path_ellips_arc_to(
-                    to.x,
-                    to.y,
-                    *angle,
-                    radius.x,
-                    radius.y,
-                    *large_arc_flag as i32,
-                    *sweep_flag as i32,
-                    22,
-                ),
-                PathElem::Close => {
+                (
+                    PathElem::ArcTo {
+                        to,
+                        radius,
+                        angle,
+                        large_arc_flag,
+                        sweep_flag,
+                    },
+                    _,
+                ) => {
+                    let to = get_pos(to.clone());
+                    let radius = get_pos(radius.clone());
+
+                    c_path_ellips_arc_to(
+                        to.x,
+                        to.y,
+                        *angle,
+                        radius.x,
+                        radius.y,
+                        *large_arc_flag as i32,
+                        *sweep_flag as i32,
+                        22,
+                    );
+                    last_pos = to;
+                }
+                (PathElem::Close, _) => {
                     justed_closed = true;
                     c_path_end(true as i32);
                 }
@@ -117,17 +146,32 @@ impl PathBuilder {
 
     pub fn move_to(&mut self, to: impl Into<Vec2>) {
         let to = to.into();
-        self.path.elems.push(PathElem::MoveTo(to.into()));
+        self.path.elems.push((PathElem::MoveTo(to.into()), false));
+    }
+
+    pub fn move_to_rel(&mut self, to: impl Into<Vec2>) {
+        let to = to.into();
+        self.path.elems.push((PathElem::MoveTo(to.into()), true));
     }
 
     pub fn line_to(&mut self, to: impl Into<Vec2>) {
-        self.path.elems.push(PathElem::LineTo(to.into()));
+        self.path.elems.push((PathElem::LineTo(to.into()), false));
+    }
+
+    pub fn line_to_rel(&mut self, to: impl Into<Vec2>) {
+        self.path.elems.push((PathElem::LineTo(to.into()), true));
     }
 
     pub fn quad_to(&mut self, ctrl: impl Into<Vec2>, to: impl Into<Vec2>) {
         self.path
             .elems
-            .push(PathElem::QuadTo(ctrl.into(), to.into()));
+            .push((PathElem::QuadTo(ctrl.into(), to.into()), false));
+    }
+
+    pub fn quad_to_rel(&mut self, ctrl: impl Into<Vec2>, to: impl Into<Vec2>) {
+        self.path
+            .elems
+            .push((PathElem::QuadTo(ctrl.into(), to.into()), true));
     }
 
     pub fn cubic_to(
@@ -136,9 +180,22 @@ impl PathBuilder {
         ctrl2: impl Into<Vec2>,
         to: impl Into<Vec2>,
     ) {
-        self.path
-            .elems
-            .push(PathElem::CubicTo(ctrl1.into(), ctrl2.into(), to.into()));
+        self.path.elems.push((
+            PathElem::CubicTo(ctrl1.into(), ctrl2.into(), to.into()),
+            false,
+        ));
+    }
+
+    pub fn cubic_to_rel(
+        &mut self,
+        ctrl1: impl Into<Vec2>,
+        ctrl2: impl Into<Vec2>,
+        to: impl Into<Vec2>,
+    ) {
+        self.path.elems.push((
+            PathElem::CubicTo(ctrl1.into(), ctrl2.into(), to.into()),
+            true,
+        ));
     }
 
     pub fn arc_to(
@@ -149,17 +206,40 @@ impl PathBuilder {
         large_arc_flag: bool,
         sweep_flag: bool,
     ) {
-        self.path.elems.push(PathElem::ArcTo {
-            to: to.into(),
-            radius: radius.into(),
-            angle,
-            large_arc_flag,
-            sweep_flag,
-        });
+        self.path.elems.push((
+            PathElem::ArcTo {
+                to: to.into(),
+                radius: radius.into(),
+                angle,
+                large_arc_flag,
+                sweep_flag,
+            },
+            false,
+        ));
+    }
+
+    pub fn arc_to_rel(
+        &mut self,
+        to: impl Into<Vec2>,
+        radius: impl Into<Vec2>,
+        angle: f32,
+        large_arc_flag: bool,
+        sweep_flag: bool,
+    ) {
+        self.path.elems.push((
+            PathElem::ArcTo {
+                to: to.into(),
+                radius: radius.into(),
+                angle,
+                large_arc_flag,
+                sweep_flag,
+            },
+            true,
+        ));
     }
 
     pub fn close(&mut self) {
-        self.path.elems.push(PathElem::Close);
+        self.path.elems.push((PathElem::Close, false));
         self.path.closed = true;
     }
 
