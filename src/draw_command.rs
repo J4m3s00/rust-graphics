@@ -1,9 +1,5 @@
 use crate::{
-    bindings::{
-        c_path_begin, c_path_cubic_bezier_curve_to, c_path_ellips_arc_to, c_path_end,
-        c_path_line_to, c_path_quadr_bezier_curve_to,
-    },
-    color::{Color, COLOR_WHITE},
+    color::{Color},
     font::Font,
     path_builder::Path,
     vec::Vec2,

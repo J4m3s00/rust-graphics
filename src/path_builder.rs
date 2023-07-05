@@ -50,6 +50,7 @@ impl Path {
     pub unsafe fn execute(&self) {
         let mut justed_closed = false;
         let mut last_pos = Vec2::default();
+        let mut last_move_pos = Vec2::default();
         for elem in &self.elems {
             let closed = justed_closed;
             justed_closed = false;
@@ -75,6 +76,7 @@ impl Path {
                     let to = get_pos(to.clone());
                     c_path_line_to(to.x, to.y);
                     last_pos = to;
+                    last_move_pos = to;
                 } //c_path_move_to(to.x, to.y
                 (PathElem::LineTo(to), _) => {
                     let to = get_pos(to.clone());
@@ -124,6 +126,7 @@ impl Path {
                 (PathElem::Close, _) => {
                     justed_closed = true;
                     c_path_end(true as i32);
+                    last_pos = last_move_pos;
                 }
             }
         }
