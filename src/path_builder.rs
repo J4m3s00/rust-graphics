@@ -171,7 +171,7 @@ impl PathBuilder {
         self.path.stroke = stroke;
     }
 
-    pub fn build(self) -> Path {
+    pub fn build(&self) -> Path {
         if self.path.elems.is_empty() {
             panic!("PathBuilder: path is empty");
         }
