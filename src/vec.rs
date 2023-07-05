@@ -1,4 +1,4 @@
-use std::ops::{Add, AddAssign, Mul, Sub};
+use std::ops::{Add, AddAssign, Div, Mul, Sub};
 
 #[derive(Debug, Clone, Copy, Default, PartialEq)]
 pub struct Vec2 {
@@ -247,6 +247,17 @@ impl Mul<f32> for Vec2 {
     }
 }
 
+impl Mul<Vec2> for Vec2 {
+    type Output = Self;
+
+    fn mul(self, other: Self) -> Self {
+        Self {
+            x: self.x * other.x,
+            y: self.y * other.y,
+        }
+    }
+}
+
 impl Mul<f32> for Vec3 {
     type Output = Self;
 
@@ -255,6 +266,18 @@ impl Mul<f32> for Vec3 {
             x: self.x * other,
             y: self.y * other,
             z: self.z * other,
+        }
+    }
+}
+
+impl Mul<Vec3> for Vec3 {
+    type Output = Self;
+
+    fn mul(self, other: Self) -> Self {
+        Self {
+            x: self.x * other.x,
+            y: self.y * other.y,
+            z: self.y * other.z,
         }
     }
 }
@@ -268,6 +291,91 @@ impl Mul<f32> for Vec4 {
             y: self.y * other,
             z: self.z * other,
             w: self.w * other,
+        }
+    }
+}
+
+impl Mul<Vec4> for Vec4 {
+    type Output = Self;
+
+    fn mul(self, other: Self) -> Self {
+        Self {
+            x: self.x * other.x,
+            y: self.y * other.y,
+            z: self.y * other.z,
+            w: self.y * other.w,
+        }
+    }
+}
+
+impl Div<f32> for Vec2 {
+    type Output = Self;
+
+    fn div(self, other: f32) -> Self {
+        Self {
+            x: self.x / other,
+            y: self.y / other,
+        }
+    }
+}
+
+impl Div<Vec2> for Vec2 {
+    type Output = Self;
+
+    fn div(self, other: Self) -> Self {
+        Self {
+            x: self.x / other.x,
+            y: self.y / other.y,
+        }
+    }
+}
+
+impl Div<f32> for Vec3 {
+    type Output = Self;
+
+    fn div(self, other: f32) -> Self {
+        Self {
+            x: self.x / other,
+            y: self.y / other,
+            z: self.z / other,
+        }
+    }
+}
+
+impl Div<Vec3> for Vec3 {
+    type Output = Self;
+
+    fn div(self, other: Self) -> Self {
+        Self {
+            x: self.x / other.x,
+            y: self.y / other.y,
+            z: self.y / other.z,
+        }
+    }
+}
+
+impl Div<f32> for Vec4 {
+    type Output = Self;
+
+    fn div(self, other: f32) -> Self {
+        Self {
+            x: self.x / other,
+            y: self.y / other,
+            z: self.z / other,
+            w: self.w / other,
+        }
+    }
+}
+
+impl Div<Vec4> for Vec4 {
+    type Output = Self;
+
+    fn div(self, other: Self) -> Self {
+        Self {
+            x: self.x / other.x,
+            y: self.y / other.y,
+            z: self.y / other.z,
+            w: self.y / other.w,
         }
     }
 }

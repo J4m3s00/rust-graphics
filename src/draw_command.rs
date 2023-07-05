@@ -1,9 +1,4 @@
-use crate::{
-    color::{Color},
-    font::Font,
-    path_builder::Path,
-    vec::Vec2,
-};
+use crate::{color::Color, font::Font, path_builder::Path, rect::Rect, vec::Vec2};
 
 #[derive(Clone, Copy, Debug)]
 pub struct Fill {
@@ -57,5 +52,5 @@ pub enum DrawCommand {
         color: Color,
         stroke: Option<Stroke>,
     },
-    Path(Path),
+    Path(Path, Vec2, Rect),
 }

@@ -100,8 +100,8 @@ pub fn run_draw_command(command: &DrawCommand) {
                     .unwrap_or(COLOR_BLACK.as_int()),
             );
         },
-        DrawCommand::Path(path) => unsafe {
-            path.execute();
+        DrawCommand::Path(path, path_dimension, rect) => unsafe {
+            path.draw(rect.top_left(), rect.size() / *path_dimension);
         },
     }
 }

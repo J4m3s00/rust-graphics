@@ -49,7 +49,7 @@ impl Path {
         );
     }
 
-    pub unsafe fn execute(&self) {
+    pub unsafe fn draw(&self, offset: Vec2, scale: Vec2) {
         let mut justed_closed = false;
         let mut last_pos = Vec2::default();
         let mut last_move_pos = Vec2::default();
@@ -62,11 +62,7 @@ impl Path {
             }
 
             let get_pos = |pos: Vec2| -> Vec2 {
-                if elem.1 {
-                    pos + last_pos
-                } else {
-                    pos
-                }
+                offset + (scale * if elem.1 { pos + last_pos } else { pos })
             };
 
             match elem {
@@ -85,13 +81,13 @@ impl Path {
                     c_path_line_to(to.x, to.y);
                     last_pos = to;
                 }
-                (PathElem::Vert(y), _) => {
-                    let to = Vec2::new(last_pos.x, *y);
+                (PathElem::Vert(y), rel) => {
+                    let to = get_pos(Vec2::new(if *rel { 0.0 } else { last_pos.x }, *y));
                     c_path_line_to(to.x, to.y);
                     last_pos = to;
                 }
-                (PathElem::Horiz(x), _) => {
-                    let to = Vec2::new(*x, last_pos.y);
+                (PathElem::Horiz(x), rel) => {
+                    let to = get_pos(Vec2::new(*x, if *rel { 0.0 } else { last_pos.y }));
                     c_path_line_to(to.x, to.y);
                     last_pos = to;
                 }

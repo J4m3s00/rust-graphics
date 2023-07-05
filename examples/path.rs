@@ -4,6 +4,7 @@ use rust_graphics::{
     draw_command::{DrawCommand, Stroke},
     init_app,
     path_builder::{Path, PathBuilder},
+    rect::Rect,
     run_draw_command,
 };
 
@@ -28,7 +29,22 @@ impl App for Editor {
     }
 
     fn on_draw(&mut self) {
-        run_draw_command(&DrawCommand::Path(self.path.clone()));
+        let rect = Rect::new_from_xy(200., 200., 500., 500.);
+
+        run_draw_command(&DrawCommand::Rect {
+            left: rect.left,
+            top: rect.top,
+            width: rect.width(),
+            height: rect.height(),
+            fill: None,
+            stroke: Some(Stroke::new(COLOR_BLACK, 2.0)),
+        });
+
+        run_draw_command(&DrawCommand::Path(
+            self.path.clone(),
+            (600., 500.).into(),
+            rect.clone(),
+        ));
     }
 }
 
