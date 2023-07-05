@@ -62,7 +62,12 @@ impl Path {
             }
 
             let get_pos = |pos: Vec2| -> Vec2 {
-                offset + (scale * if elem.1 { pos + last_pos } else { pos })
+                let pos = pos * scale;
+                if elem.1 {
+                    pos + last_pos
+                } else {
+                    offset + pos
+                }
             };
 
             match elem {
