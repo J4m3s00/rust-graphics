@@ -178,6 +178,6 @@ impl PathBuilder {
         if self.path.fill.is_none() && self.path.stroke.is_none() {
             panic!("PathBuilder: path has no fill and no stroke");
         }
-        self.path
+        self.path.clone()
     }
 }
