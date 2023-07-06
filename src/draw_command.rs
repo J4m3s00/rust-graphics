@@ -1,4 +1,6 @@
-use crate::{color::Color, font::Font, path_builder::Path, rect::Rect, vec::Vec2};
+use crate::{
+    color::Color, font::Font, path_builder::Path, rect::Rect, run_draw_command, vec::Vec2,
+};
 
 #[derive(Clone, Copy, Debug)]
 pub struct Fill {
@@ -53,4 +55,110 @@ pub enum DrawCommand {
         stroke: Option<Stroke>,
     },
     Path(Path, Vec2, Rect),
+}
+
+impl DrawCommand {
+    pub fn run(&self) {
+        run_draw_command(self);
+    }
+
+    pub fn rect_fill(left: f32, top: f32, width: f32, height: f32, fill: Fill) -> Self {
+        Self::Rect {
+            left,
+            top,
+            width,
+            height,
+            fill: Some(fill),
+            stroke: None,
+        }
+    }
+
+    pub fn rect_outline(left: f32, top: f32, width: f32, height: f32, stroke: Stroke) -> Self {
+        Self::Rect {
+            left,
+            top,
+            width,
+            height,
+            fill: None,
+            stroke: Some(stroke),
+        }
+    }
+
+    pub fn rect(left: f32, top: f32, width: f32, height: f32, fill: Fill, stroke: Stroke) -> Self {
+        Self::Rect {
+            left,
+            top,
+            width,
+            height,
+            fill: Some(fill),
+            stroke: Some(stroke),
+        }
+    }
+
+    pub fn circle_fill(center: Vec2, radius: f32, fill: Fill) -> Self {
+        Self::Circle {
+            center,
+            radius,
+            fill: Some(fill),
+            stroke: None,
+        }
+    }
+
+    pub fn circle_outline(center: Vec2, radius: f32, stroke: Stroke) -> Self {
+        Self::Circle {
+            center,
+            radius,
+            fill: None,
+            stroke: Some(stroke),
+        }
+    }
+
+    pub fn circle(center: Vec2, radius: f32, fill: Fill, stroke: Stroke) -> Self {
+        Self::Circle {
+            center,
+            radius,
+            fill: Some(fill),
+            stroke: Some(stroke),
+        }
+    }
+
+    pub fn line(p1: Vec2, p2: Vec2, stroke: Stroke) -> Self {
+        Self::Line {
+            x1: p1.x,
+            y1: p1.y,
+            x2: p2.x,
+            y2: p2.y,
+            stroke,
+        }
+    }
+
+    pub fn text(font: Font, text: String, position: Vec2, color: Color) -> Self {
+        Self::Text {
+            font,
+            text,
+            position,
+            color,
+            stroke: None,
+        }
+    }
+
+    pub fn text_stroke(
+        font: Font,
+        text: String,
+        position: Vec2,
+        color: Color,
+        stroke: Stroke,
+    ) -> Self {
+        Self::Text {
+            font,
+            text,
+            position,
+            color,
+            stroke: Some(stroke),
+        }
+    }
+
+    pub fn path(path: Path, position: Vec2, bounds: Rect) -> Self {
+        Self::Path(path, position, bounds)
+    }
 }

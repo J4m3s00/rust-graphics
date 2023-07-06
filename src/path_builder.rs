@@ -3,8 +3,8 @@ use crate::{
         c_path_begin, c_path_cubic_bezier_curve_to, c_path_ellips_arc_to, c_path_end,
         c_path_line_to, c_path_quadr_bezier_curve_to,
     },
-    color::COLOR_WHITE,
-    draw_command::{Fill, Stroke},
+    color::{Color, COLOR_BLACK, COLOR_BLUE, COLOR_GREEN, COLOR_RED, COLOR_WHITE},
+    draw_command::{DrawCommand, Fill, Stroke},
     vec::Vec2,
 };
 
@@ -14,8 +14,14 @@ enum PathElem {
     LineTo(Vec2),
     Vert(f32),
     Horiz(f32),
+    /// ctrl1, to
     QuadTo(Vec2, Vec2),
+    /// to
+    SmoothQuad(Vec2),
+    /// ctrl1, ctrl2, to
     CubicTo(Vec2, Vec2, Vec2),
+    /// ctrl2, to
+    SmoothCubic(Vec2, Vec2),
     ArcTo {
         to: Vec2,
         radius: Vec2,
@@ -28,6 +34,7 @@ enum PathElem {
 
 #[derive(Clone, Default, Debug)]
 pub struct Path {
+    /// bool is relative
     elems: Vec<(PathElem, bool)>,
     pub fill: Option<Fill>,
     pub stroke: Option<Stroke>,
@@ -53,6 +60,7 @@ impl Path {
         let mut justed_closed = false;
         let mut last_pos = Vec2::default();
         let mut last_move_pos = Vec2::default();
+        let mut last_controll_point = None;
         for elem in &self.elems {
             let closed = justed_closed;
             justed_closed = false;
@@ -69,6 +77,9 @@ impl Path {
                     offset + pos
                 }
             };
+
+            let this_last_controll = last_controll_point.clone();
+            last_controll_point = None;
 
             match elem {
                 (PathElem::MoveTo(to), _) => {
@@ -99,7 +110,35 @@ impl Path {
                 (PathElem::QuadTo(ctrl, to), _) => {
                     let to = get_pos(to.clone());
                     let ctrl = get_pos(ctrl.clone());
+
                     c_path_quadr_bezier_curve_to(ctrl.x, ctrl.y, to.x, to.y, 22);
+                    DrawCommand::circle_fill(ctrl, 3.0, Fill::new(COLOR_BLUE)).run();
+                    //DrawCommand::line(last_pos, ctrl, Stroke::new(COLOR_BLACK, 2.0)).run();
+                    //DrawCommand::line(ctrl, to, Stroke::new(COLOR_BLACK, 2.0)).run();
+
+                    last_pos = to;
+                    last_controll_point = Some(ctrl);
+                }
+                (PathElem::SmoothQuad(to), _) => {
+                    let to = get_pos(to.clone());
+                    let ctrl = this_last_controll.map_or(last_pos, |c| last_pos + (last_pos - c));
+
+                    c_path_quadr_bezier_curve_to(ctrl.x, ctrl.y, to.x, to.y, 22);
+                    DrawCommand::circle_fill(ctrl, 3.0, Fill::new(COLOR_BLUE)).run();
+                    DrawCommand::circle_fill(to, 3.0, Fill::new(COLOR_GREEN)).run();
+
+                    last_pos = to;
+                    last_controll_point = Some(ctrl);
+                }
+                (PathElem::SmoothCubic(ctrl2, to), _) => {
+                    let to = get_pos(to.clone());
+                    let ctrl1 = this_last_controll.map_or(last_pos, |c| last_pos + (last_pos - c));
+                    let ctrl2 = get_pos(ctrl2.clone());
+
+                    c_path_cubic_bezier_curve_to(
+                        ctrl1.x, ctrl1.y, ctrl2.x, ctrl2.y, to.x, to.y, 22,
+                    );
+                    last_controll_point = Some(ctrl2);
                     last_pos = to;
                 }
                 (PathElem::CubicTo(ctrl1, ctrl2, to), _) => {
@@ -109,6 +148,7 @@ impl Path {
                     c_path_cubic_bezier_curve_to(
                         ctrl1.x, ctrl1.y, ctrl2.x, ctrl2.y, to.x, to.y, 22,
                     );
+                    last_controll_point = Some(ctrl2);
                     last_pos = to;
                 }
                 (
@@ -206,6 +246,18 @@ impl PathBuilder {
             .push((PathElem::QuadTo(ctrl.into(), to.into()), true));
     }
 
+    pub fn smooth_quad_to(&mut self, to: impl Into<Vec2>) {
+        self.path
+            .elems
+            .push((PathElem::SmoothQuad(to.into()), false));
+    }
+
+    pub fn smooth_quad_to_rel(&mut self, to: impl Into<Vec2>) {
+        self.path
+            .elems
+            .push((PathElem::SmoothQuad(to.into()), true));
+    }
+
     pub fn cubic_to(
         &mut self,
         ctrl1: impl Into<Vec2>,
@@ -228,6 +280,18 @@ impl PathBuilder {
             PathElem::CubicTo(ctrl1.into(), ctrl2.into(), to.into()),
             true,
         ));
+    }
+
+    pub fn smooth_cubic_to(&mut self, ctrl2: impl Into<Vec2>, to: impl Into<Vec2>) {
+        self.path
+            .elems
+            .push((PathElem::SmoothCubic(ctrl2.into(), to.into()), false));
+    }
+
+    pub fn smooth_cubic_to_rel(&mut self, ctrl2: impl Into<Vec2>, to: impl Into<Vec2>) {
+        self.path
+            .elems
+            .push((PathElem::SmoothCubic(ctrl2.into(), to.into()), true));
     }
 
     pub fn arc_to(
