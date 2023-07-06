@@ -65,6 +65,10 @@ fn star_builder() -> PathBuilder {
     builder.line_to((24.0, 4.0));
     builder.line_to_rel((4.8, 16.0));
     builder.horiz(44.0);
+    builder.line_to_rel((-12.3, 8.8));
+    builder.line_to((36.35, 44.0));
+    builder.line_to((24.0, 34.6));
+    builder.close();
 
     builder
 }
