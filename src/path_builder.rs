@@ -97,13 +97,15 @@ impl Path {
                     c_path_line_to(to.x, to.y);
                     last_pos = to;
                 }
-                (PathElem::Vert(y), rel) => {
-                    let to = get_pos(Vec2::new(if *rel { 0.0 } else { last_pos.x }, *y));
+                (PathElem::Vert(y), _) => {
+                    let to_y = get_pos(Vec2::new(0.0, *y)).y;
+                    let to = Vec2::new(last_pos.x, to_y);
                     c_path_line_to(to.x, to.y);
                     last_pos = to;
                 }
-                (PathElem::Horiz(x), rel) => {
-                    let to = get_pos(Vec2::new(*x, if *rel { 0.0 } else { last_pos.y }));
+                (PathElem::Horiz(x), _) => {
+                    let to_x = get_pos(Vec2::new(*x, 0.0)).x;
+                    let to = Vec2::new(to_x, last_pos.y);
                     c_path_line_to(to.x, to.y);
                     last_pos = to;
                 }
