@@ -114,9 +114,6 @@ impl Path {
                     let ctrl = get_pos(ctrl.clone());
 
                     c_path_quadr_bezier_curve_to(ctrl.x, ctrl.y, to.x, to.y, 22);
-                    DrawCommand::circle_fill(ctrl, 3.0, Fill::new(COLOR_BLUE)).run();
-                    //DrawCommand::line(last_pos, ctrl, Stroke::new(COLOR_BLACK, 2.0)).run();
-                    //DrawCommand::line(ctrl, to, Stroke::new(COLOR_BLACK, 2.0)).run();
 
                     last_pos = to;
                     last_controll_point = Some(ctrl);
@@ -126,8 +123,6 @@ impl Path {
                     let ctrl = this_last_controll.map_or(last_pos, |c| last_pos + (last_pos - c));
 
                     c_path_quadr_bezier_curve_to(ctrl.x, ctrl.y, to.x, to.y, 22);
-                    DrawCommand::circle_fill(ctrl, 3.0, Fill::new(COLOR_BLUE)).run();
-                    DrawCommand::circle_fill(to, 3.0, Fill::new(COLOR_GREEN)).run();
 
                     last_pos = to;
                     last_controll_point = Some(ctrl);
