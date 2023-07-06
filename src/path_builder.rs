@@ -57,11 +57,26 @@ impl Path {
     }
 
     pub unsafe fn draw(&self, offset: Vec2, scale: Vec2) {
+        if self.elems.is_empty() {
+            return;
+        }
+        let mut elem_iter = self.elems.iter();
+        let (first_elem, _) = elem_iter.next().unwrap();
+        let PathElem::MoveTo(first_move) = first_elem else {
+            println!("Path to draw must start with an move to command!");
+            return;
+        };
+
+        self.begin();
+        let first_move = (first_move.clone() * scale) + offset;
+        c_path_line_to(first_move.x, first_move.y);
+
         let mut justed_closed = false;
-        let mut last_pos = Vec2::default();
-        let mut last_move_pos = Vec2::default();
+        let mut last_pos = first_move;
+        let mut last_move_pos = first_move;
         let mut last_controll_point = None;
-        for elem in &self.elems {
+
+        for elem in elem_iter {
             let closed = justed_closed;
             justed_closed = false;
 

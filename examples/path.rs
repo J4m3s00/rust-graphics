@@ -58,7 +58,7 @@ fn heart_builder() -> PathBuilder {
 fn star_builder() -> PathBuilder {
     let mut builder = PathBuilder::new();
     builder.stroke(Some(Stroke::new(COLOR_BLACK, 2.0)));
-    builder.move_to((11.65, 44.0));
+    builder.move_to_rel((11.65, 44.0));
     builder.line_to_rel((4.65, -15.2));
     builder.line_to((4.0, 20.0));
     builder.horiz_rel(15.2);
