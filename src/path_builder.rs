@@ -3,8 +3,8 @@ use crate::{
         c_path_begin, c_path_cubic_bezier_curve_to, c_path_ellips_arc_to, c_path_end,
         c_path_line_to, c_path_quadr_bezier_curve_to,
     },
-    color::{Color, COLOR_BLACK, COLOR_BLUE, COLOR_GREEN, COLOR_RED, COLOR_WHITE},
-    draw_command::{DrawCommand, Fill, Stroke},
+    color::COLOR_WHITE,
+    draw_command::{Fill, Stroke},
     vec::Vec2,
 };
 
@@ -42,12 +42,16 @@ pub struct Path {
 }
 
 impl Path {
-    unsafe fn begin(&self) {
+    unsafe fn begin(&self, stroke_override: Option<Stroke>) {
         c_path_begin(
-            self.stroke.is_some() as i32,
+            stroke_override.or(self.stroke).is_some() as i32,
             self.fill.is_some() as i32,
-            self.stroke.map(|s| s.width).unwrap_or(0.),
-            self.stroke
+            stroke_override
+                .or(self.stroke)
+                .map(|s| s.width)
+                .unwrap_or(0.),
+            stroke_override
+                .or(self.stroke)
                 .map(|s| s.color.as_int())
                 .unwrap_or(COLOR_WHITE.as_int()),
             self.fill
@@ -56,7 +60,7 @@ impl Path {
         );
     }
 
-    pub unsafe fn draw(&self, offset: Vec2, scale: Vec2) {
+    pub unsafe fn draw(&self, offset: Vec2, scale: Vec2, stroke_override: Option<Stroke>) {
         if self.elems.is_empty() {
             return;
         }
@@ -67,7 +71,7 @@ impl Path {
             return;
         };
 
-        self.begin();
+        self.begin(stroke_override);
         let first_move = (first_move.clone() * scale) + offset;
         c_path_line_to(first_move.x, first_move.y);
 
@@ -81,7 +85,7 @@ impl Path {
             justed_closed = false;
 
             if closed {
-                self.begin();
+                self.begin(stroke_override);
             }
 
             let get_pos = |pos: Vec2| -> Vec2 {
@@ -100,7 +104,7 @@ impl Path {
                 (PathElem::MoveTo(to), _) => {
                     if !closed {
                         c_path_end(false as i32);
-                        self.begin();
+                        self.begin(stroke_override);
                     }
                     let to = get_pos(to.clone());
                     c_path_line_to(to.x, to.y);

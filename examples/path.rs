@@ -1,6 +1,6 @@
 use rust_graphics::{
     app::App,
-    color::COLOR_BLACK,
+    color::{COLOR_BLACK, COLOR_RED},
     draw_command::{DrawCommand, Stroke},
     init_app,
     path_builder::{Path, PathBuilder},
@@ -94,11 +94,13 @@ impl App for Editor {
             stroke: Some(Stroke::new(COLOR_BLACK, 2.0)),
         });
 
-        run_draw_command(&DrawCommand::Path(
+        DrawCommand::path_stroke(
             self.path.clone(),
             (48., 48.).into(),
             rect.clone(),
-        ));
+            Stroke::new(COLOR_RED, 4.),
+        )
+        .run();
     }
 }
 

@@ -54,7 +54,12 @@ pub enum DrawCommand {
         color: Color,
         stroke: Option<Stroke>,
     },
-    Path(Path, Vec2, Rect),
+    Path {
+        path: Path,
+        path_size: Vec2,
+        render_space: Rect,
+        stroke_override: Option<Stroke>,
+    },
 }
 
 impl DrawCommand {
@@ -158,7 +163,21 @@ impl DrawCommand {
         }
     }
 
-    pub fn path(path: Path, position: Vec2, bounds: Rect) -> Self {
-        Self::Path(path, position, bounds)
+    pub fn path(path: Path, path_size: Vec2, render_space: Rect) -> Self {
+        Self::Path {
+            path,
+            path_size,
+            render_space,
+            stroke_override: None,
+        }
+    }
+
+    pub fn path_stroke(path: Path, path_size: Vec2, render_space: Rect, stroke: Stroke) -> Self {
+        Self::Path {
+            path,
+            path_size,
+            render_space,
+            stroke_override: Some(stroke),
+        }
     }
 }
