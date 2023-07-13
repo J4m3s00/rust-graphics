@@ -14,7 +14,7 @@ use crate::{
 /// WHEN CHECKING FOR SHORTCUT ALL OTHER MODS SHOULD BE FALSE, NOT JUST THE ONE BEING CHECKED.
 /// THE CAPSLOCK CAN BE IGNORED THOUGH.
 
-#[derive(Default, Debug)]
+#[derive(Default, Debug, Clone, Copy)]
 pub struct KeyMods {
     pub l_shift: bool,
     pub r_shift: bool,
@@ -44,7 +44,7 @@ impl From<u16> for KeyMods {
     }
 }
 
-#[derive(Debug)]
+#[derive(Debug, Clone)]
 pub enum AppEvent {
     None,
     Quit,
