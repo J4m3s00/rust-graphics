@@ -99,6 +99,7 @@ EXPORT AppEvent *c_poll_events()
         return NULL;
     }
     AppEvent *result = new AppEvent();
+    result->text = nullptr;
 
     switch (event.type)
     {
@@ -156,7 +157,10 @@ EXPORT AppEvent *c_poll_events()
 
 EXPORT void c_delete_app_event(AppEvent *event)
 {
-    delete[] event->text;
+    if (event->text)
+    {
+        delete[] event->text;
+    }
 }
 
 EXPORT void c_post_update_application()
