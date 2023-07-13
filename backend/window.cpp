@@ -92,7 +92,7 @@ EXPORT void c_set_cursor(Cursor c)
     switch (c)
     {
     case Cursor::Arrow:
-        cursor = SDL_SYSTEM_CURSOR_HAND;
+        cursor = SDL_SYSTEM_CURSOR_ARROW;
         break;
     case Cursor::IBeam:
         cursor = SDL_SYSTEM_CURSOR_IBEAM;
