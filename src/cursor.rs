@@ -1,5 +1,6 @@
 use crate::bindings;
 
+#[derive(Debug, Clone, Copy)]
 pub enum SystemCursor {
     Arrow,
     IBeam,
