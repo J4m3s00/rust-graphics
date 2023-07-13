@@ -1,4 +1,4 @@
-use crate::{vec::Vec2};
+use crate::vec::Vec2;
 
 #[derive(Default, Clone, Copy, Debug)]
 pub struct Rect {
