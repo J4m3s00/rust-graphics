@@ -144,9 +144,19 @@ EXPORT AppEvent *c_poll_events()
         result->x = event.motion.x;
         result->y = event.motion.y;
         break;
+    case SDL_TEXTINPUT:
+        result->type = AppEventType_TextInput;
+        result->text = new char[strlen(event.text.text) + 1];
+        strcpy(result->text, event.text.text);
+        break;
     }
 
     return result;
+}
+
+EXPORT void c_delete_app_event(AppEvent *event)
+{
+    delete[] event->text;
 }
 
 EXPORT void c_post_update_application()

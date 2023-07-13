@@ -1,8 +1,8 @@
 use app::App;
 use bindings::{
-    c_clean_up_editor, c_draw_circle, c_draw_circle_outline, c_draw_line, c_draw_rect, c_draw_text,
-    c_poll_events, c_post_update_application, c_pre_update_application, c_start_application,
-    InitApp,
+    c_clean_up_editor, c_delete_app_event, c_draw_circle, c_draw_circle_outline, c_draw_line,
+    c_draw_rect, c_draw_text, c_poll_events, c_post_update_application, c_pre_update_application,
+    c_start_application, InitApp,
 };
 use color::COLOR_BLACK;
 use draw_command::DrawCommand;
@@ -136,12 +136,13 @@ pub fn run_app<A: App>(mut app: A) {
         app.on_update();
 
         'event: loop {
-            let event = unsafe { c_poll_events() };
-            if event == std::ptr::null_mut() {
+            let event_ptr = unsafe { c_poll_events() };
+            if event_ptr == std::ptr::null_mut() {
                 break 'event;
             }
 
-            let event = AppEvent::from(unsafe { *event });
+            let event = AppEvent::from(&unsafe { *event_ptr });
+            unsafe { c_delete_app_event(event_ptr) };
             match event {
                 AppEvent::None => {
                     break 'event;

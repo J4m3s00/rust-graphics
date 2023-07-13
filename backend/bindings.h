@@ -36,6 +36,7 @@ enum AppEventType
     AppEventType_MouseMove,
     AppEventType_MouseWheel,
     AppEventType_WindowResize,
+    AppEventType_TextInput,
 };
 
 typedef struct AppEvent
@@ -45,6 +46,7 @@ typedef struct AppEvent
     int x;
     int y;
     uint32_t code; // Stores extra infos like mods on key downs
+    char *text;    // Text of textinput
 } AppEvent;
 
 // initApp is borrowed.
@@ -55,6 +57,8 @@ EXPORT void c_pre_update_application();
 // Ownership of AppEvent is transferred to the caller.
 // Update application and return an event.
 EXPORT AppEvent *c_poll_events();
+
+EXPORT void c_delete_app_event(AppEvent *event);
 
 // Post rendering update of the application
 EXPORT void c_post_update_application();

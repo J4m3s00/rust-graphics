@@ -3,7 +3,7 @@ use crate::{
         self, AppEventType_AppEventType_KeyDown, AppEventType_AppEventType_KeyUp,
         AppEventType_AppEventType_MouseDown, AppEventType_AppEventType_MouseMove,
         AppEventType_AppEventType_MouseUp, AppEventType_AppEventType_Quit,
-        AppEventType_AppEventType_WindowResize,
+        AppEventType_AppEventType_TextInput, AppEventType_AppEventType_WindowResize,
     },
     keycodes::KeyCode,
 };
@@ -57,11 +57,11 @@ pub enum AppEvent {
 
     KeyDown(KeyCode, KeyMods),
     KeyUp(KeyCode, KeyMods),
-    //TextInput(String),
+    TextInput(String),
 }
 
-impl From<bindings::AppEvent> for AppEvent {
-    fn from(value: bindings::AppEvent) -> Self {
+impl From<&bindings::AppEvent> for AppEvent {
+    fn from(value: &bindings::AppEvent) -> Self {
         #[allow(non_upper_case_globals)]
         match value.type_ {
             AppEventType_AppEventType_Quit => AppEvent::Quit,
@@ -88,6 +88,11 @@ impl From<bindings::AppEvent> for AppEvent {
                 x: value.x,
                 y: value.y,
             },
+            AppEventType_AppEventType_TextInput => {
+                let x = value.text;
+                let text = unsafe { std::ffi::CStr::from_ptr(x) };
+                AppEvent::TextInput(text.to_string_lossy().to_string())
+            }
             _ => AppEvent::None,
         }
     }
