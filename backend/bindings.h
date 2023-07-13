@@ -39,6 +39,16 @@ enum AppEventType
     AppEventType_TextInput,
 };
 
+enum Cursor
+{
+    Arrow,
+    Hand,
+    IBeam,
+    Crosshair,
+    HResize,
+    VResize,
+};
+
 typedef struct AppEvent
 {
     enum AppEventType type;
@@ -59,6 +69,8 @@ EXPORT void c_pre_update_application();
 EXPORT AppEvent *c_poll_events();
 
 EXPORT void c_delete_app_event(AppEvent *event);
+
+EXPORT void c_set_cursor(enum Cursor cursor);
 
 // Post rendering update of the application
 EXPORT void c_post_update_application();

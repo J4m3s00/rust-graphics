@@ -86,6 +86,33 @@ c_start_application(const InitApp *app)
     return 0;
 }
 
+EXPORT void c_set_cursor(Cursor c)
+{
+    SDL_SystemCursor cursor = SDL_SYSTEM_CURSOR_ARROW;
+    switch (c)
+    {
+    case Cursor::Arrow:
+        cursor = SDL_SYSTEM_CURSOR_HAND;
+        break;
+    case Cursor::IBeam:
+        cursor = SDL_SYSTEM_CURSOR_IBEAM;
+        break;
+    case Cursor::Hand:
+        cursor = SDL_SYSTEM_CURSOR_HAND;
+        break;
+    case Cursor::Crosshair:
+        cursor = SDL_SYSTEM_CURSOR_CROSSHAIR;
+        break;
+    case Cursor::HResize:
+        cursor = SDL_SYSTEM_CURSOR_SIZEWE;
+        break;
+    case Cursor::VResize:
+        cursor = SDL_SYSTEM_CURSOR_SIZENS;
+        break;
+    }
+    SDL_SetCursor(SDL_CreateSystemCursor(cursor));
+}
+
 EXPORT void c_pre_update_application()
 {
     sr::srNewFrame(state.draw_width, state.draw_height, state.window_width, state.window_height);

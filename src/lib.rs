@@ -5,6 +5,7 @@ use bindings::{
     c_start_application, InitApp,
 };
 use color::COLOR_BLACK;
+use cursor::SystemCursor;
 use draw_command::DrawCommand;
 use events::app_events::AppEvent;
 
@@ -13,6 +14,7 @@ pub mod app;
 pub(crate) mod bindings;
 pub mod circle;
 pub mod color;
+pub mod cursor;
 pub mod draw_command;
 pub mod events;
 pub mod font;
@@ -23,6 +25,10 @@ pub mod vec;
 
 pub fn quit_editor() {
     unsafe { c_clean_up_editor() };
+}
+
+pub fn set_cursor(cursor: SystemCursor) {
+    unsafe { bindings::c_set_cursor(cursor.into()) };
 }
 
 pub fn run_draw_command(command: &DrawCommand) {
