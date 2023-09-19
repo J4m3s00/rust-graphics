@@ -1,6 +1,6 @@
 use crate::bindings::{
     c_font_get_line_bottom, c_font_get_line_height, c_font_get_line_top, c_font_get_text_height,
-    c_font_get_text_width, c_load_font,
+    c_font_get_text_width, c_load_font, c_load_font_from_memory,
 };
 
 #[derive(Clone, Copy, Debug)]
@@ -14,6 +14,12 @@ impl Font {
         let c_msg = std::ffi::CString::new(path.as_ref())
             .unwrap_or(std::ffi::CString::new("ERROR Converting string").unwrap());
         let handle = unsafe { c_load_font(c_msg.as_ptr(), size) };
+
+        Self { handle, size }
+    }
+
+    pub fn from_mem(data: &[u8], size: i32) -> Self {
+        let handle = unsafe { c_load_font_from_memory(data.as_ptr(), data.len() as u32, size) };
 
         Self { handle, size }
     }

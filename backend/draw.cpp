@@ -55,6 +55,11 @@ EXPORT unsigned int c_load_font(const char *path, int size)
     return sr::srLoadFont(path, size);
 }
 
+EXPORT unsigned int c_load_font_from_memory(const unsigned char *data, unsigned int data_size, int font_size)
+{
+    return sr::srLoadFontFromMemory(data, data_size, font_size);
+}
+
 EXPORT int c_font_get_line_height(unsigned int font)
 {
     return sr::srFontGetLineHeight(font);

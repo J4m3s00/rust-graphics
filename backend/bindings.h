@@ -788,6 +788,7 @@ EXPORT void c_draw_text(unsigned int font, float x, float y, const char *text, u
 
 // Everything with fonts
 EXPORT unsigned int c_load_font(const char *path, int size);
+EXPORT unsigned int c_load_font_from_memory(const unsigned char *data, unsigned int data_size, int font_size);
 EXPORT int c_font_get_line_height(unsigned int font);
 EXPORT int c_font_get_line_top(unsigned int font);
 EXPORT int c_font_get_line_bottom(unsigned int font);
