@@ -18,7 +18,7 @@ impl Font {
         Self { handle, size }
     }
 
-    pub fn from_mem(data: &[u8], size: i32) -> Self {
+    pub fn from_memory(data: &[u8], size: i32) -> Self {
         let handle = unsafe { c_load_font_from_memory(data.as_ptr(), data.len() as u32, size) };
 
         Self { handle, size }
