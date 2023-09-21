@@ -20,7 +20,6 @@ pub mod events;
 pub mod font;
 pub mod keycodes;
 pub mod path_builder;
-pub mod rect;
 pub mod vec;
 
 pub fn quit_editor() {
@@ -109,12 +108,13 @@ pub fn run_draw_command(command: &DrawCommand) {
         DrawCommand::Path {
             path,
             path_size,
-            render_space,
+            render_position,
+            render_size,
             stroke_override,
         } => unsafe {
             path.draw(
-                render_space.top_left(),
-                render_space.size() / *path_size,
+                *render_position,
+                *render_size / *path_size,
                 *stroke_override,
             );
         },

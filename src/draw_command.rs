@@ -1,6 +1,4 @@
-use crate::{
-    color::Color, font::Font, path_builder::Path, rect::Rect, run_draw_command, vec::Vec2,
-};
+use crate::{color::Color, font::Font, path_builder::Path, run_draw_command, vec::Vec2};
 
 #[derive(Clone, Copy, Debug)]
 pub struct Fill {
@@ -57,7 +55,8 @@ pub enum DrawCommand {
     Path {
         path: Path,
         path_size: Vec2,
-        render_space: Rect,
+        render_position: Vec2,
+        render_size: Vec2,
         stroke_override: Option<Stroke>,
     },
 }
@@ -163,20 +162,28 @@ impl DrawCommand {
         }
     }
 
-    pub fn path(path: Path, path_size: Vec2, render_space: Rect) -> Self {
+    pub fn path(path: Path, path_size: Vec2, render_position: Vec2, render_size: Vec2) -> Self {
         Self::Path {
             path,
             path_size,
-            render_space,
+            render_position,
+            render_size,
             stroke_override: None,
         }
     }
 
-    pub fn path_stroke(path: Path, path_size: Vec2, render_space: Rect, stroke: Stroke) -> Self {
+    pub fn path_stroke(
+        path: Path,
+        path_size: Vec2,
+        render_position: Vec2,
+        render_size: Vec2,
+        stroke: Stroke,
+    ) -> Self {
         Self::Path {
             path,
             path_size,
-            render_space,
+            render_position,
+            render_size,
             stroke_override: Some(stroke),
         }
     }
