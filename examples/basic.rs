@@ -1,6 +1,6 @@
 use rust_graphics::{
     app::App,
-    color::{COLOR_BLACK, COLOR_CYAN},
+    color::Color,
     draw_command::{DrawCommand, Fill, Stroke},
     events::app_events::AppEvent,
     font::Font,
@@ -53,17 +53,17 @@ impl App for Editor {
             top: 24.0,
             width: self.window_size.x - 48.0,
             height: self.window_size.y - 48.0,
-            fill: Some(Fill { color: COLOR_CYAN }),
+            fill: Some(Fill { color: Color::CYAN }),
             stroke: Some(Stroke {
                 width: 2.,
-                color: COLOR_BLACK,
+                color: Color::BLACK,
             }),
         });
         run_draw_command(&DrawCommand::Text {
             font: self.font.clone(),
             text: "Hello World!gg".into(),
             position: self.window_size / 2.0,
-            color: COLOR_BLACK,
+            color: Color::BLACK,
             stroke: None,
         });
         run_draw_command(&DrawCommand::Line {
@@ -73,7 +73,7 @@ impl App for Editor {
             y2: self.window_size.y / 2.0,
             stroke: Stroke {
                 width: 1.,
-                color: COLOR_BLACK,
+                color: Color::BLACK,
             },
         });
     }

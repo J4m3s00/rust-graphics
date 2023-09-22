@@ -3,7 +3,7 @@ use crate::{
         c_path_begin, c_path_cubic_bezier_curve_to, c_path_ellips_arc_to, c_path_end,
         c_path_line_to, c_path_quadr_bezier_curve_to,
     },
-    color::COLOR_WHITE,
+    color::Color,
     draw_command::{Fill, Stroke},
     vec::Vec2,
 };
@@ -53,10 +53,10 @@ impl Path {
             stroke_override
                 .or(self.stroke)
                 .map(|s| s.color.as_int())
-                .unwrap_or(COLOR_WHITE.as_int()),
+                .unwrap_or(Color::WHITE.as_int()),
             self.fill
                 .map(|f| f.color.as_int())
-                .unwrap_or(COLOR_WHITE.as_int()),
+                .unwrap_or(Color::WHITE.as_int()),
         );
     }
 

@@ -22,6 +22,12 @@ pub struct Vec4 {
 }
 
 impl Vec2 {
+    pub const ZERO: Self = Self { x: 0., y: 0. };
+    pub const INFINITY: Self = Self {
+        x: f32::INFINITY,
+        y: f32::INFINITY,
+    };
+
     pub fn new(x: f32, y: f32) -> Self {
         Self { x, y }
     }
@@ -32,6 +38,17 @@ impl Vec2 {
 }
 
 impl Vec3 {
+    pub const ZERO: Self = Self {
+        x: 0.,
+        y: 0.,
+        z: 0.,
+    };
+    pub const INFINITY: Self = Self {
+        x: f32::INFINITY,
+        y: f32::INFINITY,
+        z: f32::INFINITY,
+    };
+
     pub fn new(x: f32, y: f32, z: f32) -> Self {
         Self { x, y, z }
     }
@@ -42,6 +59,19 @@ impl Vec3 {
 }
 
 impl Vec4 {
+    pub const ZERO: Self = Self {
+        x: 0.,
+        y: 0.,
+        z: 0.,
+        w: 0.,
+    };
+    pub const INFINITY: Self = Self {
+        x: f32::INFINITY,
+        y: f32::INFINITY,
+        z: f32::INFINITY,
+        w: f32::INFINITY,
+    };
+
     pub fn new(x: f32, y: f32, z: f32, w: f32) -> Self {
         Self { x, y, z, w }
     }

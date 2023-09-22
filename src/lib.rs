@@ -4,7 +4,7 @@ use bindings::{
     c_draw_rect, c_draw_text, c_poll_events, c_post_update_application, c_pre_update_application,
     c_start_application, InitApp,
 };
-use color::COLOR_BLACK;
+use color::Color;
 use cursor::SystemCursor;
 use draw_command::DrawCommand;
 use events::app_events::AppEvent;
@@ -102,7 +102,7 @@ pub fn run_draw_command(command: &DrawCommand) {
                 stroke.map(|s| s.width).unwrap_or(0.),
                 stroke
                     .map(|s| s.color.as_int())
-                    .unwrap_or(COLOR_BLACK.as_int()),
+                    .unwrap_or(Color::BLACK.as_int()),
             );
         },
         DrawCommand::Path {

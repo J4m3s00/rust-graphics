@@ -1,6 +1,6 @@
 use rust_graphics::{
     app::App,
-    color::{COLOR_BLACK, COLOR_RED},
+    color::Color,
     draw_command::{DrawCommand, Stroke},
     init_app,
     path_builder::{Path, PathBuilder},
@@ -14,7 +14,7 @@ struct Editor {
 
 fn heart_builder() -> PathBuilder {
     let mut builder = PathBuilder::new();
-    builder.stroke(Some(Stroke::new(COLOR_BLACK, 2.0)));
+    builder.stroke(Some(Stroke::new(Color::BLACK, 2.0)));
     //builder.fill(Some(Fill::new(COLOR_MAGENTA)));
     builder.move_to(Vec2 { x: 24.0, y: 41.95 });
     builder.line_to_rel(Vec2 { x: -2.05, y: -1.85 });
@@ -56,7 +56,7 @@ fn heart_builder() -> PathBuilder {
 
 fn star_builder() -> PathBuilder {
     let mut builder = PathBuilder::new();
-    builder.stroke(Some(Stroke::new(COLOR_BLACK, 2.0)));
+    builder.stroke(Some(Stroke::new(Color::BLACK, 2.0)));
     builder.move_to_rel((11.65, 44.0));
     builder.line_to_rel((4.65, -15.2));
     builder.line_to((4.0, 20.0));
@@ -91,7 +91,7 @@ impl App for Editor {
             width: size.x,
             height: size.y,
             fill: None,
-            stroke: Some(Stroke::new(COLOR_BLACK, 2.0)),
+            stroke: Some(Stroke::new(Color::BLACK, 2.0)),
         });
 
         DrawCommand::path_stroke(
@@ -99,7 +99,7 @@ impl App for Editor {
             (48., 48.).into(),
             position,
             size,
-            Stroke::new(COLOR_RED, 4.),
+            Stroke::new(Color::RED, 4.),
         )
         .run();
     }
