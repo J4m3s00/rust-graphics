@@ -96,6 +96,12 @@ impl From<(i32, i32)> for Vec2 {
     }
 }
 
+impl From<Vec2> for (f32, f32) {
+    fn from(value: Vec2) -> Self {
+        (value.x, value.y)
+    }
+}
+
 impl From<Vec3> for Vec2 {
     fn from(Vec3 { x, y, .. }: Vec3) -> Self {
         Self { x, y }
@@ -121,6 +127,12 @@ impl From<(i32, i32, i32)> for Vec3 {
             y: y as f32,
             z: z as f32,
         }
+    }
+}
+
+impl From<Vec3> for (f32, f32, f32) {
+    fn from(value: Vec3) -> Self {
+        (value.x, value.y, value.z)
     }
 }
 
@@ -150,6 +162,12 @@ impl From<(i32, i32, i32, i32)> for Vec4 {
             z: z as f32,
             w: w as f32,
         }
+    }
+}
+
+impl From<Vec4> for (f32, f32, f32, f32) {
+    fn from(value: Vec4) -> Self {
+        (value.x, value.y, value.z, value.w)
     }
 }
 
